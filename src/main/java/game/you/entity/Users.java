@@ -1,6 +1,9 @@
 package game.you.entity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.rest.core.annotation.RestResource;
+
+import java.util.List;
 
 
 @Entity
@@ -10,7 +13,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
-class Users {
+@RestResource(rel = "user", path = "user")
+ public class Users {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
