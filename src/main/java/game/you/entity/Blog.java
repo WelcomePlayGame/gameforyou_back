@@ -2,7 +2,7 @@ package game.you.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.rest.core.annotation.RestResource;
+
 
 @Entity
 @Builder
@@ -10,7 +10,7 @@ import org.springframework.data.rest.core.annotation.RestResource;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@RestResource(rel = "blog", path = "blog")
+
 public class Blog {
 
     @Id
@@ -22,8 +22,7 @@ public class Blog {
     private String des;
     @Column(name = "photo_Url")
     private String photo_Url;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "blog_id")
-    private Category category;
+    @Column(name = "type")
+    private String type;
 
 }
