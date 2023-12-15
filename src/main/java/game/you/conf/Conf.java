@@ -23,9 +23,10 @@ import java.util.Arrays;
 //@EnableCaching
 public class Conf implements WebMvcConfigurer {
 
-
+    @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler(new String[]{"/app/upload/", "/upload/"}).addResourceLocations(new String[]{"file:/app/upload/", "file:./upload/"});
+        registry.addResourceHandler("/app/upload/**", "/upload/**")
+                .addResourceLocations("file:/app/upload/", "file:./upload/");
     }
     @Bean
     public FilterRegistrationBean corsFilter() {
