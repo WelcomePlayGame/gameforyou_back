@@ -1,0 +1,11 @@
+package game.you.repository;
+
+import game.you.entity.PlatformsEN;
+import game.you.entity.PlatformsUA;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface PlatformsRepositoryEN extends JpaRepository<PlatformsEN, Long> {
+
+}
