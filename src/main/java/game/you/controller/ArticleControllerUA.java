@@ -36,7 +36,7 @@ public class ArticleControllerUA {
         return ResponseEntity.ok().body(service.addArticle(articleUA,posterPhoto , ids, tagSet));
 
     }
-    @PostMapping(value = "/update")
+    @PutMapping(value = "/update")
     public ResponseEntity<ArticleDTOUA> updateArticle(
             @RequestPart (name= "article") ArticleUA articleUA,
             @RequestPart (name= "posterPhoto") List<MultipartFile> posterPhoto,
@@ -46,6 +46,11 @@ public class ArticleControllerUA {
 
         return ResponseEntity.ok().body(service.updateArticle(articleUA,posterPhoto , ids, tagSet));
 
+    }
+    @DeleteMapping(value = "/delete/{id}")
+    public ResponseEntity<ArticleDTOUA> deleteArticle(@PathVariable("id") long id) {
+        service.deleteArticle(id);
+        return ResponseEntity.noContent().build();
     }
 
 

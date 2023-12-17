@@ -62,7 +62,7 @@ public class ArticleUA {
     )
     private Set<TagUA> tagSet = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "article", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "article", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Article_des_urlsUA> article_des_urls;
 
 }

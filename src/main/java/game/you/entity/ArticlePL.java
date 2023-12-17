@@ -66,7 +66,7 @@ public class ArticlePL {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Set<TagPL> tagSet = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "article", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "article", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Article_des_urlsPL> article_des_urls;
 
 }

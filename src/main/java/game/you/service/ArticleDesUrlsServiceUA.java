@@ -39,10 +39,9 @@ public class ArticleDesUrlsServiceUA implements ForkWithFile {
     @Transactional
     public Article_des_urlsUA addUrl(MultipartFile photo) throws IOException {
     String namePhoto = generateNameFile(photo);
-    log.info(UPLOAD_CATALOG);
-    createDirectory(UPLOAD_CATALOG, namePhoto, photo);
+    createDirectory(UPLOAD_CATALOG+"/ua/", namePhoto, photo);
     Article_des_urlsUA article_des_urls = new Article_des_urlsUA();
-    article_des_urls.setUrl(BASE_URL+URL_CATALOG+namePhoto);
+    article_des_urls.setUrl(BASE_URL+URL_CATALOG+"/ua/"+namePhoto);
     return repository.save(article_des_urls);
     }
 

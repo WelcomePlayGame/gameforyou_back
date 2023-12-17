@@ -41,9 +41,9 @@ public class ArticleDesUrlsServicePL implements ForkWithFile {
     public Article_des_urlsPL addUrl(MultipartFile photo) throws IOException {
     String namePhoto = generateNameFile(photo);
     log.info(UPLOAD_CATALOG);
-    createDirectory(UPLOAD_CATALOG, namePhoto, photo);
+    createDirectory(UPLOAD_CATALOG+"/pl/", namePhoto, photo);
     Article_des_urlsPL article_des_urls = new Article_des_urlsPL();
-    article_des_urls.setUrl(BASE_URL+URL_CATALOG+namePhoto);
+    article_des_urls.setUrl(BASE_URL+URL_CATALOG+"/pl/"+namePhoto);
     return repository.save(article_des_urls);
     }
 

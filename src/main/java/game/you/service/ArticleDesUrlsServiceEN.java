@@ -25,8 +25,6 @@ import java.util.List;
 public class ArticleDesUrlsServiceEN implements ForkWithFile {
 
     final private ArticleDesUrlsRepositoryEN repository;
-
-    final  private HttpServletRequest request;
     @Value("${server.url.articlies_des}")
     private String URL_CATALOG;
     @Value("${file.upload.articlies_des}")
@@ -41,9 +39,9 @@ public class ArticleDesUrlsServiceEN implements ForkWithFile {
 
     String namePhoto = generateNameFile(photo);
     log.info(UPLOAD_CATALOG);
-    createDirectory(UPLOAD_CATALOG, namePhoto, photo);
+    createDirectory(UPLOAD_CATALOG+"/en/", namePhoto, photo);
     Article_des_urlsEN article_des_urls = new Article_des_urlsEN();
-    article_des_urls.setUrl(BASE_URL+URL_CATALOG+"/"+namePhoto);
+    article_des_urls.setUrl(BASE_URL+URL_CATALOG+"/en/"+namePhoto);
     return repository.save(article_des_urls);
     }
 
@@ -53,7 +51,7 @@ public class ArticleDesUrlsServiceEN implements ForkWithFile {
         Article_des_urlsEN article_des_urls  = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Not Url..sry man"));
         String fileUrl = article_des_urls.getUrl();
         String nameFile = fileUrl.substring(fileUrl.lastIndexOf('/')+1);
-        Path path = Paths.get(UPLOAD_CATALOG, nameFile);
+        Path path = Paths.get(UPLOAD_CATALOG+"/en/", nameFile);
         deleteDirectory(path);
         repository.deleteById(article_des_urls.getId());
     }

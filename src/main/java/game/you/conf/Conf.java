@@ -28,6 +28,8 @@ public class Conf implements WebMvcConfigurer {
         registry.addResourceHandler("/app/upload/**", "/upload/**")
                 .addResourceLocations("file:/app/upload/", "file:./upload/");
     }
+
+
     @Bean
     public FilterRegistrationBean corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

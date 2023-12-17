@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
@@ -117,8 +119,6 @@ public class ArticleServiceUA implements ForkWithFile {
     @Transactional
     public ArticleDTOUA updateArticle(ArticleUA articleUA, List<MultipartFile> posterPhoto, List<Long> ids, List<String> tagSet) throws IOException {
         ArticleUA articleUAupdate = repository.findById(articleUA.getId()).orElseThrow(()-> new EntityNotFoundException("no id for article"));
-        Optional<CategoryUA> categoryUA = Optional.ofNullable(repository_ca.findById(articleUA.getCategory().getId())
-                .orElseThrow(() -> new EntityNotFoundException("No id category")));
         Optional<Article_poster_urlsUA> poster_urlsUA = Optional.ofNullable(repository_poster.findById(articleUA.getId()).orElseThrow(() -> new EntityNotFoundException("no id poster")));
         String latinTitle = StringUtils.stripAccents(articleUA.getTitle())
                 .replaceAll("\\s", "_")
@@ -136,6 +136,42 @@ public class ArticleServiceUA implements ForkWithFile {
                 }
             }
         }
+        Set<Article_des_urlsUA> listDes = new HashSet<>();
+        if (!ids.isEmpty()) {
+            for (Long id : ids) {
+                Article_des_urlsUA des = repository_des.findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("No id"));
+                des.setArticle(articleUAupdate);
+                listDes.add(des);
+            }
+        }
+        if(!tagSet.isEmpty()) {
+            Set<TagUA> listTag = new HashSet<>();
+            for (String t : tagSet) {
+                long id = Long.parseLong(t);
+                TagUA tag = repository_tag.findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("Not id"));
+                listTag.add(tag);
+            }
+            articleUAupdate.setTagSet(listTag);
+        }
+        if(articleUA.getTitle() != null) {
+            articleUAupdate.setTitle(articleUA.getTitle());
+        }
+        if (articleUA.getDes() != null) {
+            articleUAupdate.setDes(articleUA.getDes());
+        }
+        if(articleUA.getSeo_title() != null) {
+            articleUAupdate.setSeo_title(articleUA.getSeo_title());
+        }
+        if (articleUA.getSeo_des() != null) {
+            articleUAupdate.setSeo_des(articleUA.getSeo_des());
+        }
+        if (articleUA.getCategory() != null) {
+            articleUAupdate.setCategory(articleUA.getCategory());
+        }
+        articleUAupdate.setPosterUrls(poster_urlsUA.get());
+        articleUAupdate.setArticle_des_urls(listDes);
         repository.save(articleUAupdate);
         return covertToArticleDTOUA(articleUAupdate);
     }
@@ -146,4 +182,17 @@ public class ArticleServiceUA implements ForkWithFile {
         return  modelMapper.map(articleUA, ArticleDTOUA.class);
     }
 
+    @Transactional
+    public void deleteArticle(long id) {
+        Optional<Article_poster_urlsUA> poster_urlsUA = Optional.ofNullable(repository_poster.findById(id).orElseThrow(() -> new EntityNotFoundException("no id poster")));
+        String url_1024 = poster_urlsUA.get().getPosterUrl1024x768();
+        String url_480 = poster_urlsUA.get().getPosterUrl480x320();
+        String name_1024 = url_1024.substring(url_1024.lastIndexOf('/')+1);
+        String name_480 = url_480.substring(url_480.lastIndexOf('/')+1);
+        Path path_1024 = Paths.get(PATH_FILE_POSTER+"/ua/", name_1024);
+        Path path_480 = Paths.get(PATH_FILE_POSTER+"/ua/", name_480);
+        deleteDirectory(path_1024);
+        deleteDirectory(path_480);
+        repository.deleteById(id);
+    }
 }

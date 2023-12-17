@@ -64,7 +64,7 @@ public class ArticleEN implements Serializable {
     )
     private Set<TagEN> tagSet = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "article", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "article", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Article_des_urlsEN> article_des_urls;
     @OneToMany(mappedBy = "articleEN", fetch = FetchType.LAZY)
     private Set<CommentEN> commentSet;
