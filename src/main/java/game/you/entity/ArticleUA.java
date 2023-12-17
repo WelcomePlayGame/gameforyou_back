@@ -48,10 +48,9 @@ public class ArticleUA {
     private StatisticsArticleUA statistics;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JoinColumn(name = "category_id", nullable = true)
     private CategoryUA category;
-    @JsonIgnore
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gamepost_id")
     private GamePostUA gamePost;
@@ -61,7 +60,6 @@ public class ArticleUA {
             joinColumns = @JoinColumn(name = "article_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Set<TagUA> tagSet = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "article", fetch = FetchType.EAGER)

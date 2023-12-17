@@ -25,7 +25,7 @@ public class ArticleControllerUA {
     public ResponseEntity<List<ArticleDTOUA>> getListArticle() {
         return ResponseEntity.ok().body(service.getListArticle());
     }
-    @PostMapping(value = "/add",consumes = "multipart/form-data")
+    @PostMapping(value = "/add")
     public ResponseEntity<ArticleDTOUA> addArticle(
             @RequestPart (name= "article") ArticleUA articleUA,
             @RequestPart (name= "posterPhoto") List<MultipartFile> posterPhoto,
@@ -36,6 +36,18 @@ public class ArticleControllerUA {
         return ResponseEntity.ok().body(service.addArticle(articleUA,posterPhoto , ids, tagSet));
 
     }
+    @PostMapping(value = "/update")
+    public ResponseEntity<ArticleDTOUA> updateArticle(
+            @RequestPart (name= "article") ArticleUA articleUA,
+            @RequestPart (name= "posterPhoto") List<MultipartFile> posterPhoto,
+            @RequestPart(name= "ids") List<Long> ids,
+            @RequestPart(name= "tagSet") List<String> tagSet
+    ) throws IOException {
+
+        return ResponseEntity.ok().body(service.updateArticle(articleUA,posterPhoto , ids, tagSet));
+
+    }
+
 
     @GetMapping(value = "/{id}")
     ResponseEntity<ArticleDTOUA> getArticleENbyId(@PathVariable("id") String id) {

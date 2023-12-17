@@ -28,11 +28,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ArticleServiceUA implements ForkWithFile {
     final private ArticleRepositoryUA repository;
-    final private HttpServletRequest request;
     final private CategoryRepositoryUA repository_ca;
     final private ArticleDesUrlsRepositoryUA repository_des;
     final private TagRepositoryUA repository_tag;
     final private GamePostRepositoryUA repository_game;
+    final private ArticlePosterRepositoryUA repository_poster;
     final  private ModelMapper modelMapper;
     @Value("${base_url}")
     private String BASE_URL;
@@ -114,10 +114,36 @@ public class ArticleServiceUA implements ForkWithFile {
         ArticleDTOUA articleDTOUA = covertToArticleDTOUA(articleUA);
         return articleDTOUA;
     }
+    @Transactional
+    public ArticleDTOUA updateArticle(ArticleUA articleUA, List<MultipartFile> posterPhoto, List<Long> ids, List<String> tagSet) throws IOException {
+        ArticleUA articleUAupdate = repository.findById(articleUA.getId()).orElseThrow(()-> new EntityNotFoundException("no id for article"));
+        Optional<CategoryUA> categoryUA = Optional.ofNullable(repository_ca.findById(articleUA.getCategory().getId())
+                .orElseThrow(() -> new EntityNotFoundException("No id category")));
+        Optional<Article_poster_urlsUA> poster_urlsUA = Optional.ofNullable(repository_poster.findById(articleUA.getId()).orElseThrow(() -> new EntityNotFoundException("no id poster")));
+        String latinTitle = StringUtils.stripAccents(articleUA.getTitle())
+                .replaceAll("\\s", "_")
+                .replaceAll("[^\\p{L}\\p{N}]", "")
+                .toLowerCase();
+        if (!posterPhoto.isEmpty()) {
+            for (MultipartFile file : posterPhoto) {
+                String name = generateNameFile(file);
+                createDirectory(PATH_FILE_POSTER + "/ua/" + latinTitle, name, file);
+
+                if (file.getOriginalFilename().contains("1024x768")) {
+                    poster_urlsUA.get().setPosterUrl1024x768(BASE_URL+URL_ARTICLES_POSTER + "/ua/" + latinTitle + "/" + name);
+                } else if (file.getOriginalFilename().contains("480x320")) {
+                    poster_urlsUA.get().setPosterUrl480x320(BASE_URL+URL_ARTICLES_POSTER + "/ua/" + latinTitle + "/" + name);
+                }
+            }
+        }
+        repository.save(articleUAupdate);
+        return covertToArticleDTOUA(articleUAupdate);
+    }
     ArticleUA convertToArticleUA (ArticleDTOUA articleDTOUA) {return  modelMapper.map(articleDTOUA, ArticleUA.class);
     }
 
     ArticleDTOUA covertToArticleDTOUA (ArticleUA articleUA) {
         return  modelMapper.map(articleUA, ArticleDTOUA.class);
     }
+
 }
