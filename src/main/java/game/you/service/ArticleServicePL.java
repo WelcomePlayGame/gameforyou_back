@@ -55,7 +55,7 @@ public class ArticleServicePL implements ForkWithFile {
                 .replaceAll("[^\\p{L}\\p{N}]", "")
                 .toLowerCase();
         Optional<CategoryPL> categoryPL = Optional.ofNullable(repository_ca.findById(articlePL.getCategory().getId())
-                .orElseThrow(() -> new EntityNotFoundException("No id")));
+                .orElseThrow(() -> new EntityNotFoundException("No id category")));
         articlePL.setCategory(categoryPL.get());
 
 
@@ -74,7 +74,7 @@ public class ArticleServicePL implements ForkWithFile {
         Set<Article_des_urlsPL> listDes = new HashSet<>();
         for (Long id : ids) {
             Article_des_urlsPL des = repository_des.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException("No id"));
+                    .orElseThrow(() -> new EntityNotFoundException("No id des"));
             des.setArticle(articlePL);
             listDes.add(des);
         }
@@ -84,20 +84,19 @@ public class ArticleServicePL implements ForkWithFile {
         for (String t : tagSet) {
             long id = Long.parseLong(t);
             TagPL tag = repository_tag.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException("Not id"));
+                    .orElseThrow(() -> new EntityNotFoundException("Not id tag"));
             listTag.add(tag);
         }
         StatisticsArticlePL statisticsArticlePL = new StatisticsArticlePL();
-        Optional<GamePostPL> gamePostENOptional = repository_game.findById(articlePL.getId());
 
-        if (gamePostENOptional.isPresent()) {
-            GamePostPL gamePostPL = gamePostENOptional.get();
-
-            // Проверка на пустую строку (замените "" на значение, которое считаете пустой строкой)
-            if (gamePostPL.getId().equals("")) {
-                articlePL.setGamePost(null);
+        if (articlePL.getGamePost()!=null) {
+            Long id = articlePL.getGamePost().getId();
+            Optional<GamePostPL> gamePostENOptional;
+            if (id != null) {
+                gamePostENOptional = repository_game.findById(id);
+                articlePL.setGamePost(gamePostENOptional.get());
             } else {
-                articlePL.setGamePost(gamePostPL);
+                articlePL.setGamePost(null);
             }
         } else {
             articlePL.setGamePost(null);

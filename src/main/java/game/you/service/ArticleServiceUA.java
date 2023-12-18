@@ -83,16 +83,15 @@ public class ArticleServiceUA implements ForkWithFile {
             listTag.add(tag);
         }
         StatisticsArticleUA statisticsArticleUA = new StatisticsArticleUA();
-        Optional<GamePostUA> gamePostENOptional = repository_game.findById(articleUA.getId());
 
-        if (gamePostENOptional.isPresent()) {
-            GamePostUA gamePostUA = gamePostENOptional.get();
-
-            // Проверка на пустую строку (замените "" на значение, которое считаете пустой строкой)
-            if (gamePostUA.getId().equals("")) {
-                articleUA.setGamePost(null);
+        if (articleUA.getGamePost()!=null) {
+            Long id = articleUA.getGamePost().getId();
+            Optional<GamePostUA> gamePostENOptional;
+            if (id != null) {
+                gamePostENOptional = repository_game.findById(id);
+                articleUA.setGamePost(gamePostENOptional.get());
             } else {
-                articleUA.setGamePost(gamePostUA);
+                articleUA.setGamePost(null);
             }
         } else {
             articleUA.setGamePost(null);

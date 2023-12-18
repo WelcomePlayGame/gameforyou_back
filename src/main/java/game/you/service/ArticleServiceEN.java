@@ -57,7 +57,7 @@ public class ArticleServiceEN implements ForkWithFile {
                 .replaceAll("[^\\p{L}\\p{N}]", "")
                 .toLowerCase();
         Optional<CategoryEN> categoryEN = Optional.ofNullable(repository_ca.findById(articleEN.getCategory().getId())
-                .orElseThrow(() -> new EntityNotFoundException("No id")));
+                .orElseThrow(() -> new EntityNotFoundException("No id category")));
         articleEN.setCategory(categoryEN.get());
 
 
@@ -86,24 +86,24 @@ public class ArticleServiceEN implements ForkWithFile {
         for (String t : tagSet) {
             long id = Long.parseLong(t);
             TagEN tag = repository_tag.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException("Not id"));
+                    .orElseThrow(() -> new EntityNotFoundException("Not id tag"));
             listTag.add(tag);
         }
         StatisticsArticleEN statisticsArticleEN = new StatisticsArticleEN();
-        Optional<GamePostEN> gamePostENOptional = repository_game.findById(articleEN.getId());
 
-        if (gamePostENOptional.isPresent()) {
-            GamePostEN gamePostEN = gamePostENOptional.get();
-
-            // Проверка на пустую строку (замените "" на значение, которое считаете пустой строкой)
-            if (gamePostEN.getId().equals("")) {
-                articleEN.setGamePost(null);
-            } else {
-                articleEN.setGamePost(gamePostEN);
-            }
+    if (articleEN.getGamePost() !=null) {
+        Long id = articleEN.getGamePost().getId();
+        Optional<GamePostEN> gamePostENOptional;
+        if (id != null) {
+            gamePostENOptional = repository_game.findById(id);
+            articleEN.setGamePost(gamePostENOptional.get());
         } else {
             articleEN.setGamePost(null);
         }
+    }
+
+
+
         articleEN.setStatistics(statisticsArticleEN);
         articleEN.setPosterUrls(poster_urlsEN);
         articleEN.setTagSet(listTag);

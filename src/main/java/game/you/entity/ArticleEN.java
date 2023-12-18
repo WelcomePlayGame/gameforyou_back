@@ -54,7 +54,7 @@ public class ArticleEN implements Serializable {
     private CategoryEN category;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gamepost_id", nullable = true)
+    @JoinColumn(name = "gamepost_id")
     private GamePostEN gamePost;
 
     @ManyToMany
