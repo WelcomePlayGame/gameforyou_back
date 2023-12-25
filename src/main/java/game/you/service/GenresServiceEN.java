@@ -3,6 +3,7 @@ package game.you.service;
 import game.you.dto.GenresDTOEN;
 import game.you.entity.GenresEN;
 import game.you.repository.GenresRepositotyEN;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -33,5 +34,21 @@ public class GenresServiceEN {
     }
     GenresDTOEN convertToGenresDTO (GenresEN genres) {
         return modelMapper.map(genres, GenresDTOEN.class);
+    }
+
+    @Transactional
+    public void deleteGenre(long id) {
+        repositoty.deleteById(id);
+    }
+
+    @Transactional
+    public GenresDTOEN updateGenre(GenresDTOEN genresDTOEN) {
+        GenresEN genresUpdate = repositoty.findById(genresDTOEN.getId()).orElseThrow(()-> new EntityNotFoundException("no id genre"));
+        if (genresDTOEN.getTitle()!=null) {
+            genresUpdate.setTitle(genresDTOEN.getTitle());
+        }
+        repositoty.save(genresUpdate);
+        GenresDTOEN genresDTOENupdate = convertToGenresDTO(genresUpdate);
+        return genresDTOENupdate;
     }
 }

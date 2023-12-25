@@ -14,7 +14,7 @@ public class Article_des_urlsRU {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "url")
     private String url;
     @ManyToOne

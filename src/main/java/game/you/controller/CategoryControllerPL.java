@@ -25,4 +25,14 @@ public class CategoryControllerPL {
     ResponseEntity<CategoryDTOPL> addCategoryPL (@RequestBody CategoryDTOPL categoryDTOPL) {
         return ResponseEntity.ok().body(service.addCategory(categoryDTOPL));
     }
+    @DeleteMapping(value = "/delete/{id}")
+    ResponseEntity<CategoryDTOPL> deleteCategory (@PathVariable("id") long id) {
+        service.deleteCategory(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping(value = "/upldate")
+    ResponseEntity<CategoryDTOPL> updateCategory (@RequestBody CategoryDTOPL categoryDTOPL) {
+        return ResponseEntity.ok().body(service.updateCategory(categoryDTOPL));
+    }
 }

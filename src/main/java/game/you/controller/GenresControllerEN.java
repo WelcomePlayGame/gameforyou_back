@@ -24,4 +24,13 @@ public class GenresControllerEN {
     ResponseEntity<GenresDTOEN> addGenresDTOEN (@RequestBody GenresDTOEN genresDTOEN) {
         return  ResponseEntity.ok().body(service.addGenre(genresDTOEN));
     }
+    @DeleteMapping(value = "/delete/{id}")
+    ResponseEntity<GenresDTOEN> deleteGentre(@PathVariable("id")long id) {
+        service.deleteGenre(id);
+        return ResponseEntity.noContent().build();
+    }
+    @PutMapping(value = "/update")
+    ResponseEntity<GenresDTOEN> updateGenre(@RequestBody GenresDTOEN genresDTOEN) {
+        return ResponseEntity.ok().body(service.updateGenre(genresDTOEN));
+    }
 }

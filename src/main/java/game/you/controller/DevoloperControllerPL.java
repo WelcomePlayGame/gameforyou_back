@@ -25,4 +25,13 @@ public class DevoloperControllerPL {
     ResponseEntity<DevoloperGameDTOPL> addDeveloperPl (@RequestBody DevoloperGameDTOPL devoloperGameDTOPL) {
         return ResponseEntity.ok().body(service.addDevoloper(devoloperGameDTOPL));
     }
+    @DeleteMapping(value = "/delete/{id}")
+    ResponseEntity<DevoloperGameDTOPL> deleteDeveloper(@PathVariable("id") long id) {
+        service.deleteDeveloper(id);
+        return ResponseEntity.noContent().build();
+    }
+    @PutMapping(value = "/update")
+    ResponseEntity<DevoloperGameDTOPL> updateDeveloper(@RequestBody DevoloperGameDTOPL devoloperGameDTOPL) {
+        return ResponseEntity.ok().body(service.updateDeveloper(devoloperGameDTOPL));
+    }
 }

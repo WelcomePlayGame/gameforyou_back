@@ -23,4 +23,13 @@ public class PublisherContollerUA {
     ResponseEntity<PublisherUA> addPublisher(@RequestBody PublisherUA publisher) {
         return ResponseEntity.ok().body(service.addPublisher(publisher));
     }
+    @DeleteMapping(value = "/delete/{id}")
+    ResponseEntity<PublisherDTOUA> deletePublisher(@PathVariable("id") long id) {
+        service.deletePublisher(id);
+        return ResponseEntity.noContent().build();
+    }
+    @PutMapping(value = "/update")
+    ResponseEntity<PublisherDTOUA> updatePublisher(@RequestBody PublisherDTOUA publisherDTOUA) {
+        return ResponseEntity.ok().body(service.updatePublisher(publisherDTOUA));
+    }
 }

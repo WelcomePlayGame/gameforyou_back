@@ -4,6 +4,7 @@ import game.you.dto.DevoloperGameDTORU;
 import game.you.entity.DeveloperGamePL;
 import game.you.entity.DeveloperGameRU;
 import game.you.repository.DevoloperRepositoryRU;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -35,5 +36,20 @@ public class DevoloperServiceRU {
 
     DeveloperGameRU convertToDevoloperGame(DevoloperGameDTORU devoloperGameDTO) {
         return  modelMapper.map(devoloperGameDTO, DeveloperGameRU.class);
+    }
+    @Transactional
+    public void deleteDeveloper(long id) {
+        repository.deleteById(id);
+    }
+
+    @Transactional
+    public DevoloperGameDTORU updateDeveloper(DevoloperGameDTORU devoloperGameDTORU) {
+        DeveloperGameRU developerUpdate = repository.findById(devoloperGameDTORU.getId()).orElseThrow(()-> new EntityNotFoundException("no id developer"));
+        if (devoloperGameDTORU.getTitle()!=null) {
+            developerUpdate.setTitle(devoloperGameDTORU.getTitle());
+        }
+        repository.save(developerUpdate);
+        DevoloperGameDTORU devoloperGameDTORUUpdate = convertToDevoloperGameDTO(developerUpdate);
+        return devoloperGameDTORUUpdate;
     }
 }

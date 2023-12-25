@@ -32,5 +32,13 @@ public class CategoryControllerUA {
         return ResponseEntity.ok().body(service.addCategory(categoryDTO));
     }
 
-
+    @DeleteMapping(value = "/delete/{id}")
+    ResponseEntity<CategoryDTOUA> deleteCategory (@PathVariable("id") long id) {
+       service.deleteCategory(id);
+       return ResponseEntity.noContent().build();
+    }
+    @PostMapping(value = "/update")
+    ResponseEntity<CategoryDTOUA> updateCategory(@RequestBody CategoryDTOUA categoryDTOUA) {
+       return ResponseEntity.ok().body(service.update(categoryDTOUA));
+    }
 }

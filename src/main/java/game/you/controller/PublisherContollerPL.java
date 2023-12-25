@@ -24,4 +24,13 @@ public class PublisherContollerPL {
     ResponseEntity<PublisherPL> addPublisher(@RequestBody PublisherPL publisher) {
         return ResponseEntity.ok().body(service.addPublisher(publisher));
     }
+    @DeleteMapping(value = "/delete/{id}")
+    ResponseEntity<PublisherDTOPL> deletePublisher(@PathVariable("id") long id) {
+        service.deletePublisher(id);
+        return ResponseEntity.noContent().build();
+    }
+    @PutMapping(value = "/update")
+    ResponseEntity<PublisherDTOPL> updatePublsiher(@RequestBody PublisherDTOPL publisherDTOPL) {
+        return ResponseEntity.ok().body(service.updatePublisher(publisherDTOPL));
+    }
 }

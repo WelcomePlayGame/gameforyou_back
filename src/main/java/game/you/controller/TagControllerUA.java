@@ -5,6 +5,7 @@ import game.you.entity.TagUA;
 import game.you.service.TagServiceUA;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,5 +23,14 @@ public class TagControllerUA {
     @PostMapping(value = "/add")
     ResponseEntity<TagDTOUA> addTagUA (@RequestBody TagUA tagUA) {
         return  ResponseEntity.ok().body(service.addTag(tagUA));
+    }
+    @DeleteMapping(value = "/delete/{id}")
+    ResponseEntity<TagDTOUA> deleteTag(@PathVariable ("id") long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+    @PutMapping(value = "/update")
+    ResponseEntity<TagDTOUA>update (@RequestBody TagDTOUA tagDTOUA) {
+        return ResponseEntity.ok().body(service.update(tagDTOUA));
     }
 }

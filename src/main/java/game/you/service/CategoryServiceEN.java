@@ -1,19 +1,16 @@
 package game.you.service;
 
 import game.you.dto.CategoryDTOEN;
-import game.you.dto.CategoryDTOPL;
 import game.you.entity.CategoryEN;
-import game.you.entity.CategoryPL;
 import game.you.repository.CategoryRepositoryEN;
-import jdk.jfr.Category;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,7 +27,7 @@ public class CategoryServiceEN {
         return  category;
     }
 
-    @Cacheable(value = "category", key = "1")
+    @Cacheable(value = "category_en", key = "category_en_all")
     public List<CategoryDTOEN> getListCategoryDTo() {
         return repository.findAll().stream().map(this::convertToCategoryDTOEN).collect(Collectors.toList());
     }
@@ -40,5 +37,21 @@ public class CategoryServiceEN {
     }
     CategoryDTOEN convertToCategoryDTOEN (CategoryEN categoryEN) {
         return  modelMapper.map(categoryEN, CategoryDTOEN.class);
+    }
+
+    @Transactional
+    public void deleteCategory(long id) {
+        repository.deleteById(id);
+    }
+
+    @Transactional
+    public CategoryDTOEN updateCategory(CategoryDTOEN categoryDTOEN) {
+        Optional<CategoryEN> categoryUpdate = repository.findById(categoryDTOEN.getId());
+        if (categoryDTOEN.getTitle()!=null) {
+            categoryUpdate.get().setTitle(categoryDTOEN.getTitle());
+        }
+        repository.save(categoryUpdate.get());
+        CategoryDTOEN categoryDTOENupdate = convertToCategoryDTOEN(categoryUpdate.get());
+        return categoryDTOENupdate;
     }
 }

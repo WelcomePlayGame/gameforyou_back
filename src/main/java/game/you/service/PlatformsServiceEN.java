@@ -3,6 +3,7 @@ package game.you.service;
 import game.you.dto.PlatformsDTOEN;
 import game.you.entity.PlatformsEN;
 import game.you.repository.PlatformsRepositoryEN;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -35,5 +36,20 @@ public class PlatformsServiceEN {
 
     PlatformsDTOEN convertToPlatformsDTo(PlatformsEN platforms) {
         return  modelMapper.map(platforms, PlatformsDTOEN.class);
+    }
+    @Transactional
+    public void deletePlatform(long id) {
+        repository.deleteById(id);
+    }
+
+    @Transactional
+    public PlatformsDTOEN updatePlatform(PlatformsDTOEN platformsDTOEN) {
+        PlatformsEN platformUpdate = repository.findById(platformsDTOEN.getId()).orElseThrow(()-> new EntityNotFoundException("no id platform"));
+        if (platformsDTOEN.getTitle()!=null) {
+            platformUpdate.setTitle(platformsDTOEN.getTitle());
+        }
+        repository.save(platformUpdate);
+        PlatformsDTOEN platformsDTOENUpdate = convertToPlatformsDTo(platformUpdate);
+        return platformsDTOENUpdate;
     }
 }

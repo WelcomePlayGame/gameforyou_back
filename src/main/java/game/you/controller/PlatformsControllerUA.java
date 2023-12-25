@@ -4,6 +4,7 @@ import game.you.entity.PlatformsUA;
 import game.you.service.PlatformsServiceUA;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,5 +24,14 @@ public class PlatformsControllerUA {
     @PostMapping(value = "/add")
     ResponseEntity<PlatformsUA> addPlatform(@RequestBody PlatformsUA platform) {
         return ResponseEntity.ok().body(service.addPlatform(platform));
+    }
+    @DeleteMapping(value = "/delete/{id}")
+    ResponseEntity<PlatformsDTOUA> deletePlatform (@PathVariable("id") long id) {
+        service.deletePlatform(id);
+        return ResponseEntity.notFound().build();
+    }
+    @PutMapping(value = "/update")
+    ResponseEntity<PlatformsDTOUA> updatePlatform(@RequestBody PlatformsDTOUA platformsDTOUA) {
+        return ResponseEntity.ok().body(service.updatePlatform(platformsDTOUA));
     }
 }

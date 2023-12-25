@@ -22,4 +22,13 @@ public class TagControllerPL {
     ResponseEntity<TagDTOPL> addTagPl (@RequestBody TagPL tagPL) {
         return  ResponseEntity.ok().body(service.addTag(tagPL));
     }
+    @DeleteMapping(value = "/delete/{id}")
+    ResponseEntity<TagDTOPL> delete(@PathVariable("id") long id) {
+        service.delete(id);
+    return ResponseEntity.notFound().build();
+    }
+    @PutMapping(value = "/update")
+    ResponseEntity<TagDTOPL>update(@RequestBody TagDTOPL tagDTOPL) {
+        return ResponseEntity.ok().body(service.update(tagDTOPL));
+    }
 }

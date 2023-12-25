@@ -22,4 +22,13 @@ public class GenresControllerRU {
     ResponseEntity<GenresDTORU> addGenresDTORU (@RequestBody GenresDTORU genresDTORU) {
         return ResponseEntity.ok().body(service.addGenre(genresDTORU));
     }
+    @DeleteMapping(value = "/delete/{id}")
+    ResponseEntity<GenresDTORU> deleteGenre (@PathVariable("id") long id) {
+        service.deleteGenre(id);
+       return ResponseEntity.notFound().build();
+    }
+    @PutMapping(value = "/update")
+    ResponseEntity<GenresDTORU> updateGenre(@RequestBody GenresDTORU genresDTORU) {
+        return ResponseEntity.ok().body(service.updateGenre(genresDTORU));
+    }
 }

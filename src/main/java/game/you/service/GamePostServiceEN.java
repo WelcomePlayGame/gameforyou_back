@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,6 +39,7 @@ public class GamePostServiceEN implements ForkWithFile {
     @Value("${base_url}")
     private String BASE_URL;
 
+    @Cacheable(value = "game_en_all", key = "game_en_all")
     public List <GamePostDTOEN> getAllFGame(Long id) {
         return repository.findAllCustom(id).stream().map(this::convertToGamePostDTO).collect(Collectors.toList());
     }
@@ -94,6 +96,7 @@ public class GamePostServiceEN implements ForkWithFile {
         return repository.save(gamePost);
     }
 
+    @Cacheable(value = "game_en_id", key = "#id")
     public GamePostByIdDTOEN getGamePostDTOEN(String id) {
         GamePostEN gamePostEN = repository.findByUrlPost(id).orElseThrow(()-> new EntityNotFoundException("Not found id Game"));
         GamePostByIdDTOEN gamePostDTOEN = convertToGamePostByIdDTO(gamePostEN);

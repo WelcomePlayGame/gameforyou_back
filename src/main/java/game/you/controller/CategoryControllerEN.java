@@ -22,4 +22,14 @@ public class CategoryControllerEN {
     ResponseEntity<CategoryDTOEN> addCategoryEN (@RequestBody CategoryDTOEN categoryDTOEN) {
         return ResponseEntity.ok().body(service.addCategory(categoryDTOEN));
     }
+
+    @DeleteMapping(value = "/delete/{id}")
+    ResponseEntity<CategoryDTOEN> deleteCategory (@PathVariable("id") long id) {
+        service.deleteCategory(id);
+        return ResponseEntity.noContent().build();
+    }
+    @PostMapping(value = "/update")
+    ResponseEntity<CategoryDTOEN>updateCategory(@RequestBody CategoryDTOEN categoryDTOEN) {
+        return ResponseEntity.ok().body(service.updateCategory(categoryDTOEN));
+    }
 }

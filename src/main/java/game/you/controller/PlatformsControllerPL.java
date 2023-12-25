@@ -25,4 +25,13 @@ public class PlatformsControllerPL {
     ResponseEntity<PlatformsDTOPL> addPlatformsDTOPL (@RequestBody PlatformsDTOPL platformsDTOPL) {
         return  ResponseEntity.ok().body(service.addPlatform(platformsDTOPL));
     }
+    @DeleteMapping(value = "/delete/{id}")
+    ResponseEntity<PlatformsDTOPL> deletePlatform(@PathVariable("id") long id) {
+        service.deletePlatform(id);
+        return ResponseEntity.noContent().build();
+    }
+    @PutMapping(value = "/update")
+    ResponseEntity<PlatformsDTOPL> updatePlatform(@RequestBody PlatformsDTOPL platformsDTOPL) {
+        return ResponseEntity.ok().body(service.updatePlatform(platformsDTOPL));
+    }
 }

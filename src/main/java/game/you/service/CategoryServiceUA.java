@@ -3,6 +3,7 @@ package game.you.service;
 import game.you.dto.CategoryDTOUA;
 import game.you.entity.CategoryUA;
 import game.you.repository.CategoryRepositoryUA;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.Cacheable;
@@ -36,5 +37,21 @@ public class CategoryServiceUA {
     }
     CategoryDTOUA convertToCategoryDTOUA (CategoryUA categoryUA) {
         return modelMapper.map(categoryUA, CategoryDTOUA.class);
+    }
+
+    @Transactional
+    public void deleteCategory(long id) {
+        repository.deleteById(id);
+    }
+
+    @Transactional
+    public CategoryDTOUA update(CategoryDTOUA categoryDTOUA) {
+        CategoryUA categoryUpdate = repository.findById(categoryDTOUA.getId()).orElseThrow(()-> new EntityNotFoundException("no id category"));
+        if (categoryDTOUA.getTitle()!=null) {
+            categoryUpdate.setTitle(categoryDTOUA.getTitle());
+        }
+        repository.save(categoryUpdate);
+        CategoryDTOUA categoryDTOUAupdate = convertToCategoryDTOUA(categoryUpdate);
+        return categoryDTOUAupdate;
     }
 }

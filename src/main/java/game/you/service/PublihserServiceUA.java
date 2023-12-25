@@ -3,6 +3,7 @@ package game.you.service;
 import game.you.dto.PublisherDTOUA;
 import game.you.entity.PublisherUA;
 import game.you.repository.PublihserRepositoryUA;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -32,5 +33,21 @@ public class PublihserServiceUA {
 
     PublisherDTOUA convertToPublisherDTO(PublisherUA publisher) {
         return modelMapper.map(publisher, PublisherDTOUA.class);
+    }
+
+    @Transactional
+    public void deletePublisher(long id) {
+        repository.deleteById(id);
+    }
+
+    @Transactional
+    public PublisherDTOUA updatePublisher(PublisherDTOUA publisherDTOUA) {
+        PublisherUA publisheUpdate = repository.findById(publisherDTOUA.getId()).orElseThrow(()-> new EntityNotFoundException("no id publisher"));
+        if (publisherDTOUA.getTitle()!=null) {
+            publisheUpdate.setTitle(publisherDTOUA.getTitle());
+        }
+        repository.save(publisheUpdate);
+        PublisherDTOUA publisherDTOUAUpdate = convertToPublisherDTO(publisheUpdate);
+        return publisherDTOUAUpdate;
     }
 }

@@ -4,6 +4,7 @@ package game.you.service;
 import game.you.dto.CategoryDTORU;
 import game.you.entity.CategoryRU;
 import game.you.repository.CategoryRepositoryRU;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.Cacheable;
@@ -37,5 +38,21 @@ public class CategoryServiceRU {
     }
     CategoryDTORU convertToCategoryDTORU (CategoryRU categoryRU) {
         return  modelMapper.map(categoryRU, CategoryDTORU.class);
+    }
+
+    @Transactional
+    public void deleteCategory(long id) {
+        repository.deleteById(id);
+    }
+
+    @Transactional
+    public CategoryDTORU updateCategory(CategoryDTORU categoryDTORU) {
+    CategoryRU categoryUpdate = repository.findById(categoryDTORU.getId()).orElseThrow(()-> new EntityNotFoundException("no id category"));
+    if (categoryDTORU.getTitle()!=null) {
+        categoryUpdate.setTitle(categoryDTORU.getTitle());
+    }
+    repository.save(categoryUpdate);
+    CategoryDTORU categoryDTORUupdate = convertToCategoryDTORU(categoryUpdate);
+    return categoryDTORUupdate;
     }
 }

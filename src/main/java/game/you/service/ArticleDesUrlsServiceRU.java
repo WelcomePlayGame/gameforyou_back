@@ -1,12 +1,10 @@
 package game.you.service;
 
 
-
 import game.you.entity.Article_des_urlsRU;
 import game.you.repository.ArticleDesUrlsRepositoryRU;
 import game.you.unit.ForkWithFile;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,8 +24,6 @@ import java.util.List;
 public class ArticleDesUrlsServiceRU implements ForkWithFile {
 
     final private ArticleDesUrlsRepositoryRU repository;
-
-    final  private HttpServletRequest request;
     @Value("${server.url.articlies_des}")
     private String URL_CATALOG;
     @Value("${file.upload.articlies_des}")

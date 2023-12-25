@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -115,9 +116,11 @@ public class ArticleServiceEN implements ForkWithFile {
         return articleDTOEN;
     }
 
+    @Cacheable()
     public List<ArticleDTOEN> getListArticle(Long id) {
         return repository.findAllCustom(id).stream().map(this::covertToArticleDTOEN).collect(Collectors.toList());
     }
+
 
     public ArticleDTOEN getArticleById(String id) {
         ArticleEN articleEN = repository.findByUrl(id).orElseThrow(()-> new EntityNotFoundException("No id"));
