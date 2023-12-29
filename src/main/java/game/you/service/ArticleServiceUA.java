@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -106,8 +107,8 @@ public class ArticleServiceUA implements ForkWithFile {
         ArticleDTOUA articleDTOUA = covertToArticleDTOUA(articleUA);
         return articleDTOUA;
     }
-    public List<ArticleDTOUA> getListArticle() {
-        return  repository.findAll().stream().map(this::covertToArticleDTOUA).collect(Collectors.toList());
+    public List<ArticleDTOUA> getListArticle(long id) {
+        return  repository.findAllCustom(id).stream().map(this::covertToArticleDTOUA).collect(Collectors.toList());
     }
 
     public ArticleDTOUA getArticleById(String id) {
@@ -115,11 +116,17 @@ public class ArticleServiceUA implements ForkWithFile {
         ArticleDTOUA articleDTOUA = covertToArticleDTOUA(articleUA);
         return articleDTOUA;
     }
+
+
     @Transactional
     public ArticleDTOUA updateArticle(ArticleUA articleUA, List<MultipartFile> posterPhoto, List<Long> ids, List<String> tagSet) throws IOException {
         ArticleUA articleUAupdate = repository.findById(articleUA.getId()).orElseThrow(()-> new EntityNotFoundException("no id for article"));
+        if(articleUA.getTitle() != null) {
+            articleUAupdate.setTitle(articleUA.getTitle());
+        }
         Optional<Article_poster_urlsUA> poster_urlsUA = Optional.ofNullable(repository_poster.findById(articleUA.getId()).orElseThrow(() -> new EntityNotFoundException("no id poster")));
-        String latinTitle = StringUtils.stripAccents(articleUA.getTitle())
+
+        String latinTitle = StringUtils.stripAccents(articleUAupdate.getTitle())
                 .replaceAll("\\s", "_")
                 .replaceAll("[^\\p{L}\\p{N}]", "")
                 .toLowerCase();
@@ -153,9 +160,6 @@ public class ArticleServiceUA implements ForkWithFile {
                 listTag.add(tag);
             }
             articleUAupdate.setTagSet(listTag);
-        }
-        if(articleUA.getTitle() != null) {
-            articleUAupdate.setTitle(articleUA.getTitle());
         }
         if (articleUA.getDes() != null) {
             articleUAupdate.setDes(articleUA.getDes());

@@ -116,7 +116,6 @@ public class ArticleServiceEN implements ForkWithFile {
         return articleDTOEN;
     }
 
-    @Cacheable()
     public List<ArticleDTOEN> getListArticle(Long id) {
         return repository.findAllCustom(id).stream().map(this::covertToArticleDTOEN).collect(Collectors.toList());
     }

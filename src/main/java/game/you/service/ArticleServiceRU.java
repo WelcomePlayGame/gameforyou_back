@@ -104,8 +104,8 @@ public class ArticleServiceRU implements ForkWithFile {
         return articleDTORU;
     }
 
-    public List<ArticleDTORU> getListArticle() {
-        return  repository.findAll().stream().map(this::covertToArticleDTORU).collect(Collectors.toList());
+    public List<ArticleDTORU> getListArticle(long id) {
+        return  repository.findAllCustom(id).stream().map(this::covertToArticleDTORU).collect(Collectors.toList());
     }
 
     ArticleRU convertToArticleRU (ArticleDTORU articleDTORU) {

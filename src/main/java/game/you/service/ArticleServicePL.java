@@ -112,8 +112,8 @@ public class ArticleServicePL implements ForkWithFile {
         return articleDTOPL;
     }
 
-    public List<ArticleDTOPL> getListArticle() {
-        return  repository.findAll().stream().map(this::covertToArticleDTOPL).collect(Collectors.toList());
+    public List<ArticleDTOPL> getListArticle(long id) {
+        return  repository.findAllCustom(id).stream().map(this::covertToArticleDTOPL).collect(Collectors.toList());
     }
 
 

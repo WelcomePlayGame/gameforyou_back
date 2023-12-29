@@ -7,11 +7,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Comparator;
 import java.util.UUID;
+import java.util.stream.Stream;
+
 public interface ForkWithFile {
 
     default String generateNameFile(MultipartFile file) {
@@ -53,6 +54,22 @@ public interface ForkWithFile {
             System.out.println("File not found");
         }
     }
+    static void deleteDirectoryAndItsContent(Path directory) throws IOException {
+        if (Files.exists(directory) && Files.isDirectory(directory)) {
+            // Используем Files.walk для получения всех файлов и поддиректорий
+            Files.walk(directory)
+                    .sorted(Comparator.reverseOrder()) // Сортируем пути в обратном порядке для удаления сначала файлов, затем директорий
+                    .map(Path::toFile)
+                    .forEach(File::delete); // Удаляем каждый файл и директорию
+
+            System.out.println("Directory and all contents deleted: " + directory);
+        } else {
+            System.out.println("Directory not found: " + directory);
+        }
+    }
+
+
+
 
     default String getBaseUrl() {
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();

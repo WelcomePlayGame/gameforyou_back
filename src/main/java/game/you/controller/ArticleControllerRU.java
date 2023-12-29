@@ -19,8 +19,8 @@ import java.util.List;
 public class ArticleControllerRU {
     final  private ArticleServiceRU service;
     @GetMapping
-    ResponseEntity<List<ArticleDTORU>> getListArticleEN () {
-        return ResponseEntity.ok().body(service.getListArticle());
+    ResponseEntity<List<ArticleDTORU>> getListArticleEN (@RequestParam(required = false) Long id) {
+        return ResponseEntity.ok().body(service.getListArticle(id));
     }
 
     @GetMapping(value = "/{id}")

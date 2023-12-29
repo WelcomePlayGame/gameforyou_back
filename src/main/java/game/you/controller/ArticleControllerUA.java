@@ -22,8 +22,10 @@ import java.util.stream.Collectors;
 public class ArticleControllerUA {
     final private ArticleServiceUA service;
     @GetMapping
-    public ResponseEntity<List<ArticleDTOUA>> getListArticle() {
-        return ResponseEntity.ok().body(service.getListArticle());
+    public ResponseEntity<List<ArticleDTOUA>> getListArticle(
+            @RequestParam(required = false) Long id
+    ) {
+        return ResponseEntity.ok().body(service.getListArticle(id));
     }
     @PostMapping(value = "/add")
     public ResponseEntity<ArticleDTOUA> addArticle(
