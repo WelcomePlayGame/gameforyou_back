@@ -1,6 +1,7 @@
 package game.you.service;
 
 
+import game.you.dto.ArticleDTOEN;
 import game.you.dto.ArticleDTORU;
 import game.you.entity.*;
 import game.you.repository.*;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -81,17 +83,27 @@ public class ArticleServiceRU implements ForkWithFile {
             listTag.add(tag);
         }
         StatisticsArticleRU statisticsArticleRU = new StatisticsArticleRU();
-        if (articleRU.getGamePost()!=null) {
+//        if (articleRU.getGamePost()!=null) {
+//            Long id = articleRU.getGamePost().getId();
+//            Optional<GamePostRU> gamePostENOptional;
+//            if (id != null) {
+//                gamePostENOptional = repository_game.findById(id);
+//                articleRU.setGamePost(gamePostENOptional.get());
+//            } else {
+//                articleRU.setGamePost(null);
+//            }
+//        } else {
+//            articleRU.setGamePost(null);
+//        }
+        if (articleRU.getGamePost() !=null) {
             Long id = articleRU.getGamePost().getId();
-            Optional<GamePostRU> gamePostENOptional;
+            Optional<GamePostRU> gamePostRUOptional;
             if (id != null) {
-                gamePostENOptional = repository_game.findById(id);
-                articleRU.setGamePost(gamePostENOptional.get());
+                gamePostRUOptional = repository_game.findById(id);
+                articleRU.setGamePost(gamePostRUOptional.get());
             } else {
                 articleRU.setGamePost(null);
             }
-        } else {
-            articleRU.setGamePost(null);
         }
         articleRU.setStatistics(statisticsArticleRU);
         articleRU.setPosterUrls(poster_urlsRU);
@@ -103,8 +115,8 @@ public class ArticleServiceRU implements ForkWithFile {
         ArticleDTORU articleDTORU = covertToArticleDTORU(articleRU);
         return articleDTORU;
     }
-
-    public List<ArticleDTORU> getListArticle(long id) {
+    @Cacheable(value = "article_ru_all", key = "'article_ru_all'+#id")
+    public List<ArticleDTORU> getListArticle(Long id) {
         return  repository.findAllCustom(id).stream().map(this::covertToArticleDTORU).collect(Collectors.toList());
     }
 
@@ -115,7 +127,7 @@ public class ArticleServiceRU implements ForkWithFile {
     ArticleDTORU covertToArticleDTORU (ArticleRU articleRU) {
         return  modelMapper.map(articleRU, ArticleDTORU.class);
     }
-
+    @Cacheable(value = "article_ru_id", key = "'article_ru_id:'+#id")
     public ArticleDTORU getArticleById(String id) {
         ArticleRU articleRU = repository.findByUrl(id).orElseThrow(()-> new EntityNotFoundException("No id"));
         ArticleDTORU articleDTORU = covertToArticleDTORU(articleRU);

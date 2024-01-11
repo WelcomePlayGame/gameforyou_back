@@ -40,7 +40,11 @@ public class ArticleControllerRU {
             @RequestPart(name= "ids") List<Long> ids,
             @RequestPart(name= "tagSet") List<String> tagSet
     ) throws IOException {
-
+        if (articleRU.getGamePost() == null) {
+            System.out.println("GamePost is " + null);
+        } else {
+            System.out.println("not null");
+        }
         return ResponseEntity.ok().body(service.addArticle(articleRU,posterPhoto , ids, tagSet));
 
     }

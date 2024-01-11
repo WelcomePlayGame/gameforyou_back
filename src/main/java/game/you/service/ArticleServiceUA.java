@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -107,11 +108,16 @@ public class ArticleServiceUA implements ForkWithFile {
         ArticleDTOUA articleDTOUA = covertToArticleDTOUA(articleUA);
         return articleDTOUA;
     }
-    public List<ArticleDTOUA> getListArticle(long id) {
+    @Cacheable(value = "article_ua_all", key = "'article_ua_all'+#id")
+    public List<ArticleDTOUA> getListArticle(Long id) {
+
         return  repository.findAllCustom(id).stream().map(this::covertToArticleDTOUA).collect(Collectors.toList());
     }
-
+    @Cacheable(value = "article_ua_id", key = "'article_ua_id:'+#id")
     public ArticleDTOUA getArticleById(String id) {
+        if (id == null || id.equals("")) {
+            throw new IllegalArgumentException("String id not be null for method getArticleById");
+        }
         ArticleUA articleUA = repository.findByUrl(id).orElseThrow(()-> new EntityNotFoundException("No id"));
         ArticleDTOUA articleDTOUA = covertToArticleDTOUA(articleUA);
         return articleDTOUA;

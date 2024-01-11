@@ -4,9 +4,11 @@ package game.you.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Setter
 @Getter
-public class GamePostHorizontalDTOEN {
+public class GamePostHorizontalDTOEN implements Serializable {
     private long id;
     private String poster_1024x768;
     private String poster_480x320;

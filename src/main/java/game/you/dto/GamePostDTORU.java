@@ -5,12 +5,13 @@ import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Set;
 
 @Setter
 @Getter
-public class GamePostDTORU {
+public class GamePostDTORU implements Serializable {
     private Long id;
     private String title;
     private String seo_title;

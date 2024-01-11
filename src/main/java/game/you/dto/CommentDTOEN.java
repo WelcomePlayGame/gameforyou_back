@@ -4,12 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.Set;
 
 @Setter
 @Getter
-@ToString
-public class CommentDTOEN {
+public class CommentDTOEN  {
     private Long id;
     private String title_comment;
     private String des_comment;

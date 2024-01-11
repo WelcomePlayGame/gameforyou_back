@@ -4,9 +4,11 @@ package game.you.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Setter
 @Getter
-public class GenresDTOUA {
+public class GenresDTOUA implements Serializable {
 
     private Long id;
     private String title;

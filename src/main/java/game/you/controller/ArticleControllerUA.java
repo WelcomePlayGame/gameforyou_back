@@ -34,7 +34,16 @@ public class ArticleControllerUA {
             @RequestPart(name= "ids") List<Long> ids,
             @RequestPart(name= "tagSet") List<String> tagSet
                                               ) throws IOException {
-
+       for(String tag : tagSet) {
+           if (tag == null || tag.isEmpty()) {
+               throw new IllegalArgumentException("Illigal tag ["+tag+"]");
+           }
+       }
+        for (MultipartFile file : posterPhoto) {
+            if (file == null || file.isEmpty()) {
+                throw new IllegalArgumentException("Illigal file is ["+file+"]");
+            }
+        }
         return ResponseEntity.ok().body(service.addArticle(articleUA,posterPhoto , ids, tagSet));
 
     }

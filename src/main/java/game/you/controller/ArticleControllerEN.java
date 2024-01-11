@@ -45,6 +45,11 @@ public class ArticleControllerEN {
 
 
     ) throws IOException {
+        if (articleEN.getGamePost() == null) {
+            System.out.println("GamePost is " + null);
+        } else {
+            System.out.println("not null");
+        }
         return ResponseEntity.ok().body(service.addArticle(articleEN, posterPhoto, ids, tagSet));
     }
 

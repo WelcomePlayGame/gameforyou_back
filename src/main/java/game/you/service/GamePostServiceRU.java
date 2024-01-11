@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,6 +50,7 @@ public class GamePostServiceRU implements ForkWithFile {
     GamePostDTORU convertToGamePostDTO(GamePostRU gamePost) {
         return modelMapper.map(gamePost, GamePostDTORU.class);
     }
+    @Cacheable(value = "game_ru_all", key = "'game_ru_all'+#id")
     public List <GamePostDTORU> getAllFGame() {
         return repository.findAll().stream().map(this::convertToGamePostDTO).collect(Collectors.toList());
     }
@@ -107,7 +109,7 @@ public class GamePostServiceRU implements ForkWithFile {
          return gamePostDTORU;
     }
 
-
+    @Cacheable(value = "game_ru_id", key = "'game_ru_id:'+#id")
     public GamePostDTORU getGameById(String id) {
         Optional<GamePostRU> gamePostRU = repository.findByUrl(id);
         GamePostDTORU gamePostDTORU = convertToGamePostDTO(gamePostRU.get());

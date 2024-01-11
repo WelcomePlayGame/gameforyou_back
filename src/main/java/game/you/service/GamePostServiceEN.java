@@ -1,24 +1,30 @@
 package game.you.service;
 
-import game.you.dto.ArticleDTOEN;
 import game.you.dto.GamePostByIdDTOEN;
 import game.you.dto.GamePostDTOEN;
 import game.you.entity.*;
-import game.you.repository.*;
+import game.you.repository.GamePostDesUrlRepositoryEN;
+import game.you.repository.GamePostRepositoryEN;
+import game.you.repository.GenresRepositotyEN;
+import game.you.repository.PlatformsRepositoryEN;
 import game.you.unit.ForkWithFile;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,7 +37,7 @@ public class GamePostServiceEN implements ForkWithFile {
     final  private ModelMapper modelMapper;
     final  private PlatformsRepositoryEN platformsRepository;
     final private GenresRepositotyEN genresRepositoty;
-    final  private HttpServletRequest request;
+
     @Value("${server.url.gamepost_poster}")
     private String URL_CATALOG;
     @Value("${file.upload.gamepost_poster}")
@@ -39,7 +45,8 @@ public class GamePostServiceEN implements ForkWithFile {
     @Value("${base_url}")
     private String BASE_URL;
 
-    @Cacheable(value = "game_en_all", key = "game_en_all")
+
+    @Cacheable(value = "game_en_all", key = "'game_en_all'+#id")
     public List <GamePostDTOEN> getAllFGame(Long id) {
         return repository.findAllCustom(id).stream().map(this::convertToGamePostDTO).collect(Collectors.toList());
     }
@@ -95,8 +102,7 @@ public class GamePostServiceEN implements ForkWithFile {
         gamePost.setPosterVertical_urs(photoVertical);
         return repository.save(gamePost);
     }
-
-    @Cacheable(value = "game_en_id", key = "#id")
+    @Cacheable(value = "game_en_id", key = "'game_en_id:'+#id")
     public GamePostByIdDTOEN getGamePostDTOEN(String id) {
         GamePostEN gamePostEN = repository.findByUrlPost(id).orElseThrow(()-> new EntityNotFoundException("Not found id Game"));
         GamePostByIdDTOEN gamePostDTOEN = convertToGamePostByIdDTO(gamePostEN);

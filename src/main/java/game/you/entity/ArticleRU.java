@@ -53,7 +53,7 @@ public class ArticleRU {
     @JoinColumn(name = "category_id")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private CategoryRU category;
-    @JsonIgnore
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gamepost_id")
     private GamePostRU gamePost;

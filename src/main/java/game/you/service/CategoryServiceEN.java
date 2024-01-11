@@ -27,7 +27,7 @@ public class CategoryServiceEN {
         return  category;
     }
 
-    @Cacheable(value = "category_en", key = "category_en_all")
+
     public List<CategoryDTOEN> getListCategoryDTo() {
         return repository.findAll().stream().map(this::convertToCategoryDTOEN).collect(Collectors.toList());
     }

@@ -3,12 +3,13 @@ package game.you.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Set;
 
 @Setter
 @Getter
-public class GamePostDTOUA {
+public class GamePostDTOUA implements Serializable {
     private Long id;
     private String title;
     private String seo_title;

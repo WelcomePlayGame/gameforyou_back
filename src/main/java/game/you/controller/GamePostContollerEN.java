@@ -50,4 +50,5 @@ public class GamePostContollerEN {
             return  ResponseEntity.notFound().build();
         }
     }
+
 }

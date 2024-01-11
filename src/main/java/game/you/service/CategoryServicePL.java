@@ -27,7 +27,7 @@ public class CategoryServicePL {
         return category;
     }
 
-    @Cacheable(value = "category", key = "1")
+
     public List<CategoryDTOPL> getListCategoryDTo() {
         return repository.findAll().stream().map(this::convertToCategoryDTOPL).collect(Collectors.toList());
     }

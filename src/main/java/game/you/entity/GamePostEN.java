@@ -66,6 +66,7 @@ public class GamePostEN implements Serializable  {
 
     @OneToMany(mappedBy = "gamePost")
     private Set<ArticleEN> articleSet = new LinkedHashSet<>();
+
     @OneToMany(mappedBy = "gamePost")
     private Set<CommentEN>  commentSet = new LinkedHashSet<>();
 

@@ -15,7 +15,6 @@ import java.util.Set;
 
 @Setter
 @Getter
-@ToString
 public class ArticleDTOEN {
     private long id;
     private String title;

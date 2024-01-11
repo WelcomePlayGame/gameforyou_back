@@ -4,10 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 @Setter
 @Getter
-@ToString
-public class StatisticsArticleDTOUA {
+public class StatisticsArticleDTOUA implements Serializable {
     private Long id;
     private long action;
     private long more15;

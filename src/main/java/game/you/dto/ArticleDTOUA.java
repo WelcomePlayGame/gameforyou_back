@@ -2,13 +2,15 @@ package game.you.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Set;
 
 @Setter
 @Getter
-public class ArticleDTOUA {
+public class ArticleDTOUA  implements Serializable {
     private long id;
     private String title;
     private String des;

@@ -8,6 +8,8 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.cors.CorsConfiguration;
@@ -16,11 +18,12 @@ import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
 import java.util.Arrays;
 
 @Configuration
 @EnableWebMvc
-//@EnableCaching
+@EnableCaching
 public class Conf implements WebMvcConfigurer {
 
     @Override
@@ -67,5 +70,6 @@ public class Conf implements WebMvcConfigurer {
         objectMapper.registerModule(new JavaTimeModule());
         return objectMapper;
     }
+
 
 }

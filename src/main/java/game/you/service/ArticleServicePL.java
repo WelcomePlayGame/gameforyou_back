@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -112,11 +113,12 @@ public class ArticleServicePL implements ForkWithFile {
         return articleDTOPL;
     }
 
-    public List<ArticleDTOPL> getListArticle(long id) {
+    @Cacheable(value = "article_pl_all", key = "'article_pl_all'+#id")
+    public List<ArticleDTOPL> getListArticle(Long id) {
         return  repository.findAllCustom(id).stream().map(this::covertToArticleDTOPL).collect(Collectors.toList());
     }
 
-
+    @Cacheable(value = "article_pl_id", key = "'article_pl_id:'+#id")
     public ArticleDTOPL getArticleById(String id) {
         ArticlePL articlePL = repository.findByUrl(id).orElseThrow(()-> new EntityNotFoundException("No id"));
         ArticleDTOPL articleDTOPL = covertToArticleDTOPL(articlePL);

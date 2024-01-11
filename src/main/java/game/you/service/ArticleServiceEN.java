@@ -116,11 +116,12 @@ public class ArticleServiceEN implements ForkWithFile {
         return articleDTOEN;
     }
 
+    @Cacheable(value = "article_en_all", key = "'article_en_all'+#id")
     public List<ArticleDTOEN> getListArticle(Long id) {
         return repository.findAllCustom(id).stream().map(this::covertToArticleDTOEN).collect(Collectors.toList());
     }
 
-
+    @Cacheable(value = "article_en_id", key = "'article_en_id:'+#id")
     public ArticleDTOEN getArticleById(String id) {
         ArticleEN articleEN = repository.findByUrl(id).orElseThrow(()-> new EntityNotFoundException("No id"));
         ArticleDTOEN articleDTOEN = covertToArticleDTOEN(articleEN);

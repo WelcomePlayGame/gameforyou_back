@@ -3,6 +3,7 @@ package game.you.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.Set;
 
 @Setter
