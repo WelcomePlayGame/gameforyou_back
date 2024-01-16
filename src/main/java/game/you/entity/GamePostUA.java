@@ -67,13 +67,13 @@ public class GamePostUA implements Serializable  {
     private Set<ArticleUA> getArticleList = new LinkedHashSet<>();
 
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
             joinColumns = {@JoinColumn(name = "gamepost_id")},
             inverseJoinColumns = {@JoinColumn(name = "platforms_id")}
     )
     private Set<PlatformsUA> platformsSet = new LinkedHashSet<>();
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
             joinColumns = {@JoinColumn(name = "gamepost_id")},
             inverseJoinColumns = {@JoinColumn(name = "genres_id")}

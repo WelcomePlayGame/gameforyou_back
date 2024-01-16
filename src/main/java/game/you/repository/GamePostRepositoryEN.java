@@ -12,9 +12,10 @@ import java.util.Optional;
 
 @Repository
 public interface GamePostRepositoryEN extends JpaRepository<GamePostEN, Long> {
-    @Query("select  g from  GamePostEN  g where"+
-            ":id is null  or g.id = :id")
-    List<GamePostEN> findAllCustom(@Param("id") Long id);
+    @Query("SELECT g FROM GamePostEN g WHERE (:id IS NULL OR g.id = :id) AND (:series_games IS NULL OR (g.series_games) = (:series_games))")
+    List<GamePostEN> findAllCustom(@Param("id") Long id, @Param("series_games") String series_games);
+
+
 
 
     @Query("SELECT g FROM GamePostEN g LEFT JOIN FETCH g.articleSet LEFT JOIN FETCH g.commentSet WHERE g.url_post = :id")

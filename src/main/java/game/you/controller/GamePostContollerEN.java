@@ -23,9 +23,10 @@ public class GamePostContollerEN {
     final private GamePostServiceEN service;
     @GetMapping
     ResponseEntity<List<GamePostDTOEN>> getListGamePostEN (
-            @RequestParam(value = "id", required = false) Long id
+            @RequestParam(value = "id", required = false) Long id,
+            @RequestParam(value = "series_games", required = false) String series_games
     ) {
-        return  ResponseEntity.ok().body(service.getAllFGame(id));
+        return  ResponseEntity.ok().body(service.getAllFGame(id, series_games));
     }
     @PostMapping(value = "/add")
     public ResponseEntity<GamePostEN> addPostGame (@RequestPart(name = "article") GamePostEN gamePost,
@@ -49,6 +50,11 @@ public class GamePostContollerEN {
         } catch (EntityNotFoundException e){
             return  ResponseEntity.notFound().build();
         }
+    }
+    @DeleteMapping(value = "/delete/{id}")
+    ResponseEntity<ResponseEntity> deleteGame(@PathVariable("id") long id) {
+        service.deleteGame(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

@@ -2,6 +2,7 @@ package game.you.controller;
 
 
 import game.you.dto.ArticleDTORU;
+import game.you.dto.ArticleDTOUA;
 import game.you.entity.ArticleRU;
 import game.you.service.ArticleServiceRU;
 import jakarta.persistence.EntityNotFoundException;
@@ -48,4 +49,10 @@ public class ArticleControllerRU {
         return ResponseEntity.ok().body(service.addArticle(articleRU,posterPhoto , ids, tagSet));
 
     }
+    @DeleteMapping(value = "/delete/{id}")
+    public ResponseEntity<ArticleDTORU> deleteArticle(@PathVariable("id") long id) {
+        service.deleteArticle(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

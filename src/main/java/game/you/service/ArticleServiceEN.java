@@ -1,6 +1,7 @@
 package game.you.service;
 
 import game.you.dto.ArticleDTOEN;
+import game.you.dto.ArticleDTOUA;
 import game.you.entity.*;
 import game.you.repository.*;
 import game.you.unit.ForkWithFile;
@@ -17,6 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
@@ -36,6 +40,8 @@ public class ArticleServiceEN implements ForkWithFile {
     final private TagRepositoryEN repository_tag;
     final private CategoryRepositoryEN repository_ca;
     final private GamePostRepositoryEN repository_game;
+    final private ArticlePosterRepositoryEN repository_poster;
+    final private CategoryRepositoryEN categoryRepository_en;
     @Value("${server.url.articlies_poster}")
     private String URL_ARTICLES_POSTER;
     @Value("${base_url}")
@@ -115,6 +121,78 @@ public class ArticleServiceEN implements ForkWithFile {
         ArticleDTOEN articleDTOEN = covertToArticleDTOEN(articleEN);
         return articleDTOEN;
     }
+    @Transactional
+    public ArticleDTOEN updateArticle(ArticleEN articleEN, List<MultipartFile> posterPhoto, List<Long> ids, List<String> tagSet) throws IOException, URISyntaxException {
+        ArticleEN articleENupdate = repository.findById(articleEN.getId()).orElseThrow(() -> new EntityNotFoundException("no id for article"));
+        log.info(articleENupdate.getPosterUrls().getPosterUrl1024x768());
+        System.out.println(articleENupdate.getPosterUrls().getPosterUrl1024x768());
+        URI cutPath = new URI(articleENupdate.getPosterUrls().getPosterUrl1024x768());
+        String path = cutPath.getPath();
+
+
+        Path pathForDelete = Path.of(path).getParent();
+        ForkWithFile.deleteDirectoryAndItsContent(pathForDelete);
+
+        if(articleEN.getTitle() != null) {
+            articleENupdate.setTitle(articleEN.getTitle());
+        }
+        Optional<Article_poster_urlsEN> poster_urlsEN = Optional.ofNullable(repository_poster.findById(articleENupdate.getId()).orElseThrow(() -> new EntityNotFoundException("no id poster")));
+
+        String latinTitle = StringUtils.stripAccents(articleENupdate.getTitle())
+                .replaceAll("\\s", "_")
+                .replaceAll("[^\\p{L}\\p{N}]", "")
+                .toLowerCase();
+        if (!posterPhoto.isEmpty()) {
+            for (MultipartFile file : posterPhoto) {
+                String name = generateNameFile(file);
+                createDirectory(PATH_FILE_POSTER + "/en/" + latinTitle, name, file);
+
+                if (file.getOriginalFilename().contains("1024x768")) {
+                    poster_urlsEN.get().setPosterUrl1024x768(BASE_URL+URL_ARTICLES_POSTER + "/en/" + latinTitle + "/" + name);
+                } else if (file.getOriginalFilename().contains("480x320")) {
+                    poster_urlsEN.get().setPosterUrl480x320(BASE_URL+URL_ARTICLES_POSTER + "/en/" + latinTitle + "/" + name);
+                }
+            }
+        }
+        Set<Article_des_urlsEN> listDes = new HashSet<>();
+        if (!ids.isEmpty()) {
+            for (Long id : ids) {
+                Article_des_urlsEN des = repository_des.findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("No id"));
+                des.setArticle(articleENupdate);
+                listDes.add(des);
+            }
+        }
+        if(!tagSet.isEmpty()) {
+            Set<TagEN> listTag = new HashSet<>();
+            for (String t : tagSet) {
+                long id = Long.parseLong(t);
+                TagEN tag = repository_tag.findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("Not id"));
+                listTag.add(tag);
+            }
+            articleENupdate.setTagSet(listTag);
+        }
+        if (articleEN.getDes() != null) {
+            articleENupdate.setDes(articleEN.getDes());
+        }
+        if(articleEN.getSeo_title() != null) {
+            articleENupdate.setSeo_title(articleEN.getSeo_title());
+        }
+        if (articleEN.getSeo_des() != null) {
+            articleENupdate.setSeo_des(articleEN.getSeo_des());
+        }
+        if (articleEN.getCategory() != null) {
+            CategoryEN categoryEN = categoryRepository_en.findById(articleEN.getId()).orElseThrow(()-> new EntityNotFoundException("Category id no found"));
+            articleENupdate.setCategory(categoryEN);
+            articleENupdate.getCategory().setTitle(categoryEN.getTitle());
+            repository_ca.save(categoryEN);
+        }
+        articleENupdate.setPosterUrls(poster_urlsEN.get());
+        articleENupdate.setArticle_des_urls(listDes);
+        repository.save(articleEN);
+        return covertToArticleDTOEN(articleENupdate);
+    }
 
     @Cacheable(value = "article_en_all", key = "'article_en_all'+#id")
     public List<ArticleDTOEN> getListArticle(Long id) {
@@ -126,5 +204,10 @@ public class ArticleServiceEN implements ForkWithFile {
         ArticleEN articleEN = repository.findByUrl(id).orElseThrow(()-> new EntityNotFoundException("No id"));
         ArticleDTOEN articleDTOEN = covertToArticleDTOEN(articleEN);
         return articleDTOEN;
+    }
+
+    @Transactional
+    public void deleteArticle(long id) {
+        repository.deleteById(id);
     }
 }

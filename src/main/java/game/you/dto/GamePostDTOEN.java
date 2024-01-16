@@ -33,5 +33,5 @@ public class GamePostDTOEN implements Serializable {
     private Set<PlatformsDTOEN> platformsSet;
     private Set<GenresDTOEN> genresSet;
     private String url_post;
-
+    private String series_games;
 }

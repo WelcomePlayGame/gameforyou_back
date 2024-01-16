@@ -125,4 +125,8 @@ public class ArticleServicePL implements ForkWithFile {
         return articleDTOPL;
     }
 
+    @Transactional
+    public void deleteArticle(long id) {
+        repository.deleteById(id);
+    }
 }

@@ -54,17 +54,21 @@ public interface ForkWithFile {
             System.out.println("File not found");
         }
     }
-    static void deleteDirectoryAndItsContent(Path directory) throws IOException {
-        if (Files.exists(directory) && Files.isDirectory(directory)) {
-            // Используем Files.walk для получения всех файлов и поддиректорий
-            Files.walk(directory)
-                    .sorted(Comparator.reverseOrder()) // Сортируем пути в обратном порядке для удаления сначала файлов, затем директорий
-                    .map(Path::toFile)
-                    .forEach(File::delete); // Удаляем каждый файл и директорию
+     static void deleteDirectoryAndItsContent(Path directory) throws IOException {
+         Path currentWorkingDirectory = Paths.get(System.getProperty("user.dir")).toAbsolutePath();
+         Path targetDirectory= Paths.get(currentWorkingDirectory.toString(), String.valueOf(directory));
 
-            System.out.println("Directory and all contents deleted: " + directory);
+
+
+         if (Files.exists(targetDirectory) && Files.isDirectory(targetDirectory)) {
+            Files.walk(targetDirectory)
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+
+            System.out.println("Directory and all contents deleted: " + targetDirectory);
         } else {
-            System.out.println("Directory not found: " + directory);
+            System.out.println("Directory not found: " + targetDirectory);
         }
     }
 

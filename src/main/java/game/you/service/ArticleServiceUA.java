@@ -127,6 +127,7 @@ public class ArticleServiceUA implements ForkWithFile {
     @Transactional
     public ArticleDTOUA updateArticle(ArticleUA articleUA, List<MultipartFile> posterPhoto, List<Long> ids, List<String> tagSet) throws IOException {
         ArticleUA articleUAupdate = repository.findById(articleUA.getId()).orElseThrow(()-> new EntityNotFoundException("no id for article"));
+
         if(articleUA.getTitle() != null) {
             articleUAupdate.setTitle(articleUA.getTitle());
         }

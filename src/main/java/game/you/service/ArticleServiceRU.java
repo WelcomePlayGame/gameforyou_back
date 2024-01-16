@@ -133,4 +133,9 @@ public class ArticleServiceRU implements ForkWithFile {
         ArticleDTORU articleDTORU = covertToArticleDTORU(articleRU);
         return articleDTORU;
     }
+
+    @Transactional
+    public void deleteArticle(long id) {
+        repository.deleteById(id);
+    }
 }

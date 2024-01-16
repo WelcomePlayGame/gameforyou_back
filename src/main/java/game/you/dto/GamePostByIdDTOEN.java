@@ -37,4 +37,5 @@ public class GamePostByIdDTOEN {
     private String url_post;
     private Set<ListArticleForGame> articleSet;
     private Set<CommentDTOEN> commentSet;
+    private String series_games;
 }

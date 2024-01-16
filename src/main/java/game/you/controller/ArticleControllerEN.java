@@ -1,8 +1,10 @@
 package game.you.controller;
 
 import game.you.dto.ArticleDTOEN;
+import game.you.dto.ArticleDTOUA;
 import game.you.dto.GamePostDTOEN;
 import game.you.entity.ArticleEN;
+import game.you.entity.ArticleUA;
 import game.you.service.ArticleServiceEN;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Getter;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
@@ -39,7 +42,7 @@ public class ArticleControllerEN {
     @PostMapping(value = "/add")
     ResponseEntity<ArticleDTOEN> addArticleEN (
             @RequestPart (name= "article") ArticleEN articleEN,
-            @RequestPart (name= "posterPhoto") List<MultipartFile> posterPhoto,
+            @RequestPart (name= "posterPhoto", required = false) List<MultipartFile> posterPhoto,
             @RequestPart(name= "ids") List<Long> ids,
             @RequestPart(name= "tagSet") List<String> tagSet
 
@@ -53,6 +56,24 @@ public class ArticleControllerEN {
         return ResponseEntity.ok().body(service.addArticle(articleEN, posterPhoto, ids, tagSet));
     }
 
+
+    @PutMapping(value = "/update")
+    public ResponseEntity<ArticleDTOEN> updateArticle(
+            @RequestPart (name= "article") ArticleEN articleEN,
+            @RequestPart (name= "posterPhoto") List<MultipartFile> posterPhoto,
+            @RequestPart(name= "ids") List<Long> ids,
+            @RequestPart(name= "tagSet") List<String> tagSet
+    ) throws IOException, URISyntaxException {
+
+        return ResponseEntity.ok().body(service.updateArticle(articleEN,posterPhoto , ids, tagSet));
+
+    }
+
+    @DeleteMapping(value = "/delete/{id}")
+    public ResponseEntity<ArticleDTOEN> deleteArticle(@PathVariable("id") long id) {
+        service.deleteArticle(id);
+        return ResponseEntity.noContent().build();
+    }
 
 
 }

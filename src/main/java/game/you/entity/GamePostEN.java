@@ -51,6 +51,8 @@ public class GamePostEN implements Serializable  {
     private String memory;
     @Column(name = "url_post")
     private String url_post;
+    @Column(name = "series_games")
+    private String series_games;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "poster_horizontal", referencedColumnName = "id")
     private GamePosterHorizontalEN posterHorizontal_uls;
@@ -64,25 +66,25 @@ public class GamePostEN implements Serializable  {
     @JoinColumn(name = "publisher_id")
     private PublisherEN publisher;
 
-    @OneToMany(mappedBy = "gamePost")
+    @OneToMany(mappedBy = "gamePost", cascade = CascadeType.MERGE)
     private Set<ArticleEN> articleSet = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "gamePost")
+    @OneToMany(mappedBy = "gamePost", cascade = CascadeType.ALL)
     private Set<CommentEN>  commentSet = new LinkedHashSet<>();
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
             joinColumns = {@JoinColumn(name = "gamepost_id")},
             inverseJoinColumns = {@JoinColumn(name = "platforms_id")}
     )
     private Set<PlatformsEN> platformsSet = new LinkedHashSet<>();
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
             joinColumns = {@JoinColumn(name = "gamepost_id")},
             inverseJoinColumns = {@JoinColumn(name = "genres_id")}
     )
     private Set<GenresEN> genresSet = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "gamePost", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "gamePost", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<GamePost_des_urlsEN> gamePost_des_urls;
 }

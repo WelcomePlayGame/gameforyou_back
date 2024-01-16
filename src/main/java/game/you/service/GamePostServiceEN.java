@@ -15,7 +15,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,8 +46,8 @@ public class GamePostServiceEN implements ForkWithFile {
 
 
     @Cacheable(value = "game_en_all", key = "'game_en_all'+#id")
-    public List <GamePostDTOEN> getAllFGame(Long id) {
-        return repository.findAllCustom(id).stream().map(this::convertToGamePostDTO).collect(Collectors.toList());
+    public List <GamePostDTOEN> getAllFGame(Long id, String series_games) {
+        return repository.findAllCustom(id, series_games).stream().map(this::convertToGamePostDTO).collect(Collectors.toList());
     }
 
     @Transactional
@@ -123,7 +122,10 @@ public class GamePostServiceEN implements ForkWithFile {
     }
 
 
-
+    @Transactional
+    public void deleteGame(long id) {
+        repository.deleteById(id);
+    }
 }
 
 

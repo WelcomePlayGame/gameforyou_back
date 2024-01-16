@@ -67,19 +67,19 @@ public class GamePostRU implements Serializable  {
     private Set<ArticleRU> getArticleList = new LinkedHashSet<>();
 
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
             joinColumns = {@JoinColumn(name = "gamepost_id")},
             inverseJoinColumns = {@JoinColumn(name = "platforms_id")}
     )
     private Set<PlatformsRU> platformsSet = new LinkedHashSet<>();
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
             joinColumns = {@JoinColumn(name = "gamepost_id")},
             inverseJoinColumns = {@JoinColumn(name = "genres_id")}
     )
     private Set<GenresRU> genresSet = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "gamePost", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "gamePost", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<GamePost_des_urlsRU> gamePost_des_urls;
 }

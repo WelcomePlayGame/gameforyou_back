@@ -2,6 +2,7 @@ package game.you.controller;
 
 import game.you.dto.ArticleDTOEN;
 import game.you.dto.ArticleDTOPL;
+import game.you.dto.ArticleDTOUA;
 import game.you.entity.ArticleEN;
 import game.you.entity.ArticlePL;
 import game.you.service.ArticleServiceEN;
@@ -43,6 +44,12 @@ public class ArticleControllerPL {
 
     ) throws IOException {
         return ResponseEntity.ok().body(service.addArticle(articlePL, posterPhoto, ids, tagSet));
+    }
+
+    @DeleteMapping(value = "/delete/{id}")
+    public ResponseEntity<ArticleDTOPL> deleteArticle(@PathVariable("id") long id) {
+        service.deleteArticle(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
