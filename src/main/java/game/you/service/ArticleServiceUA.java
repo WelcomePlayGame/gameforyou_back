@@ -18,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
@@ -125,13 +127,19 @@ public class ArticleServiceUA implements ForkWithFile {
 
 
     @Transactional
-    public ArticleDTOUA updateArticle(ArticleUA articleUA, List<MultipartFile> posterPhoto, List<Long> ids, List<String> tagSet) throws IOException {
-        ArticleUA articleUAupdate = repository.findById(articleUA.getId()).orElseThrow(()-> new EntityNotFoundException("no id for article"));
+    public ArticleDTOUA updateArticle(ArticleUA articleUA, List<MultipartFile> posterPhoto, List<Long> ids, List<String> tagSet) throws IOException, URISyntaxException {
+        ArticleUA articleUAupdate = repository.findById(articleUA.getId()).orElseThrow(() -> new EntityNotFoundException("no id for article"));
+        URI cutPath = new URI(articleUAupdate.getPosterUrls().getPosterUrl1024x768());
+        String path = cutPath.getPath();
+
+
+        Path pathForDelete = Path.of(path).getParent();
+        ForkWithFile.deleteDirectoryAndItsContent(pathForDelete);
 
         if(articleUA.getTitle() != null) {
             articleUAupdate.setTitle(articleUA.getTitle());
         }
-        Optional<Article_poster_urlsUA> poster_urlsUA = Optional.ofNullable(repository_poster.findById(articleUA.getId()).orElseThrow(() -> new EntityNotFoundException("no id poster")));
+        Optional<Article_poster_urlsUA> poster_urlsUA = Optional.ofNullable(repository_poster.findById(articleUAupdate.getId()).orElseThrow(() -> new EntityNotFoundException("no id poster")));
 
         String latinTitle = StringUtils.stripAccents(articleUAupdate.getTitle())
                 .replaceAll("\\s", "_")
@@ -178,10 +186,13 @@ public class ArticleServiceUA implements ForkWithFile {
             articleUAupdate.setSeo_des(articleUA.getSeo_des());
         }
         if (articleUA.getCategory() != null) {
-            articleUAupdate.setCategory(articleUA.getCategory());
+            CategoryUA categoryUA = repository_ca.findById(articleUA.getId()).orElseThrow(()-> new EntityNotFoundException("Category id no found"));
+            articleUAupdate.setCategory(categoryUA);
+            repository_ca.save(categoryUA);
         }
         articleUAupdate.setPosterUrls(poster_urlsUA.get());
         articleUAupdate.setArticle_des_urls(listDes);
+
         repository.save(articleUAupdate);
         return covertToArticleDTOUA(articleUAupdate);
     }

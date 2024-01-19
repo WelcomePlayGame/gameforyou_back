@@ -34,4 +34,5 @@ public class GamePostDTOPL implements Serializable {
     private Set<GenresDTOPL> genresSet;
     private Set<GamePost_des_urlsDTOPL>  gamePost_des_urls;
     private String url_post;
+    private String series_games;
 }

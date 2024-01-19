@@ -34,4 +34,5 @@ public class GamePostDTOUA implements Serializable {
     private Set<GenresDTOUA> genresSet;
     private Set<GamePost_des_urlsDTOUA>  gamePost_des_urls;
     private String url_post;
+    private String series_games;
 }

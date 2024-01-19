@@ -50,6 +50,8 @@ public class GamePostPL implements Serializable  {
     private String memory;
     @Column(name = "url_post")
     private String url_post;
+    @Column(name = "series_games")
+    private String series_games;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "poster_horizontal", referencedColumnName = "id")
     private GamePosterHorizontalPL posterHorizontal_uls;

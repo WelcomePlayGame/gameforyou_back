@@ -36,4 +36,5 @@ public class GamePostDTORU implements Serializable {
     private Set<GenresDTORU> genresSet;
     private Set<GamePost_des_urlsDTORU>  gamePost_des_urls;
     private String url_post;
+    private String series_games;
 }

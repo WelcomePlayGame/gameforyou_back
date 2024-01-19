@@ -1,12 +1,10 @@
 package game.you.service;
 
 import game.you.dto.ArticleDTOEN;
-import game.you.dto.ArticleDTOUA;
 import game.you.entity.*;
 import game.you.repository.*;
 import game.you.unit.ForkWithFile;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -35,7 +33,6 @@ import java.util.stream.Collectors;
 public class ArticleServiceEN implements ForkWithFile {
     final private ArticleRepositoryEN repository;
     final private ModelMapper modelMapper;
-    final private HttpServletRequest request;
     final private ArticleDesUrlsRepositoryEN repository_des;
     final private TagRepositoryEN repository_tag;
     final private CategoryRepositoryEN repository_ca;
@@ -108,8 +105,6 @@ public class ArticleServiceEN implements ForkWithFile {
             articleEN.setGamePost(null);
         }
     }
-
-
 
         articleEN.setStatistics(statisticsArticleEN);
         articleEN.setPosterUrls(poster_urlsEN);
@@ -185,12 +180,12 @@ public class ArticleServiceEN implements ForkWithFile {
         if (articleEN.getCategory() != null) {
             CategoryEN categoryEN = categoryRepository_en.findById(articleEN.getId()).orElseThrow(()-> new EntityNotFoundException("Category id no found"));
             articleENupdate.setCategory(categoryEN);
-            articleENupdate.getCategory().setTitle(categoryEN.getTitle());
             repository_ca.save(categoryEN);
         }
         articleENupdate.setPosterUrls(poster_urlsEN.get());
         articleENupdate.setArticle_des_urls(listDes);
-        repository.save(articleEN);
+
+        repository.save(articleENupdate);
         return covertToArticleDTOEN(articleENupdate);
     }
 

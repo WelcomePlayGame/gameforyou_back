@@ -62,6 +62,8 @@ public class GamePostUA implements Serializable  {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "publisher_id")
     private PublisherUA publisher;
+    @Column(name = "series_games")
+    private String series_games;
 
     @OneToMany(mappedBy = "gamePost")
     private Set<ArticleUA> getArticleList = new LinkedHashSet<>();

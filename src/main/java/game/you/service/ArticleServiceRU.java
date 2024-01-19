@@ -2,6 +2,7 @@ package game.you.service;
 
 
 import game.you.dto.ArticleDTOEN;
+import game.you.dto.ArticleDTOPL;
 import game.you.dto.ArticleDTORU;
 import game.you.entity.*;
 import game.you.repository.*;
@@ -18,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
@@ -30,7 +34,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ArticleServiceRU implements ForkWithFile {
     final private ArticleRepositoryRU repository;
-    final private HttpServletRequest request;
+    final private ArticlePosterRepositoryRU repository_poster;
     final private CategoryRepositoryRU repository_ca;
     final private ArticleDesUrlsRepositoryRU repository_des;
     final private TagRepositoryRU repository_tag;
@@ -114,6 +118,76 @@ public class ArticleServiceRU implements ForkWithFile {
 
         ArticleDTORU articleDTORU = covertToArticleDTORU(articleRU);
         return articleDTORU;
+    }
+    @Transactional
+    public ArticleDTORU updateArticle(ArticleRU articleRU, List<MultipartFile> posterPhoto, List<Long> ids, List<String> tagSet) throws IOException, URISyntaxException {
+        ArticleRU articleRUupdate = repository.findById(articleRU.getId()).orElseThrow(() -> new EntityNotFoundException("no id for article"));
+        URI cutPath = new URI(articleRUupdate.getPosterUrls().getPosterUrl1024x768());
+        String path = cutPath.getPath();
+
+
+        Path pathForDelete = Path.of(path).getParent();
+        ForkWithFile.deleteDirectoryAndItsContent(pathForDelete);
+
+        if(articleRU.getTitle() != null) {
+            articleRUupdate.setTitle(articleRU.getTitle());
+        }
+        Optional<Article_poster_urlsRU> poster_urlsRU = Optional.ofNullable(repository_poster.findById(articleRUupdate.getId()).orElseThrow(() -> new EntityNotFoundException("no id poster")));
+
+        String latinTitle = StringUtils.stripAccents(articleRUupdate.getTitle())
+                .replaceAll("\\s", "_")
+                .replaceAll("[^\\p{L}\\p{N}]", "")
+                .toLowerCase();
+        if (!posterPhoto.isEmpty()) {
+            for (MultipartFile file : posterPhoto) {
+                String name = generateNameFile(file);
+                createDirectory(PATH_FILE_POSTER + "/ru/" + latinTitle, name, file);
+
+                if (file.getOriginalFilename().contains("1024x768")) {
+                    poster_urlsRU.get().setPosterUrl1024x768(BASE_URL+URL_ARTICLES_POSTER + "/ru/" + latinTitle + "/" + name);
+                } else if (file.getOriginalFilename().contains("480x320")) {
+                    poster_urlsRU.get().setPosterUrl480x320(BASE_URL+URL_ARTICLES_POSTER + "/ru/" + latinTitle + "/" + name);
+                }
+            }
+        }
+        Set<Article_des_urlsRU> listDes = new HashSet<>();
+        if (!ids.isEmpty()) {
+            for (Long id : ids) {
+                Article_des_urlsRU des = repository_des.findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("No id"));
+                des.setArticle(articleRUupdate);
+                listDes.add(des);
+            }
+        }
+        if(!tagSet.isEmpty()) {
+            Set<TagRU> listTag = new HashSet<>();
+            for (String t : tagSet) {
+                long id = Long.parseLong(t);
+                TagRU tag = repository_tag.findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("Not id"));
+                listTag.add(tag);
+            }
+            articleRUupdate.setTagSet(listTag);
+        }
+        if (articleRU.getDes() != null) {
+            articleRUupdate.setDes(articleRU.getDes());
+        }
+        if(articleRU.getSeo_title() != null) {
+            articleRUupdate.setSeo_title(articleRU.getSeo_title());
+        }
+        if (articleRU.getSeo_des() != null) {
+            articleRUupdate.setSeo_des(articleRU.getSeo_des());
+        }
+        if (articleRU.getCategory() != null) {
+            CategoryRU categoryRU = repository_ca.findById(articleRU.getId()).orElseThrow(()-> new EntityNotFoundException("Category id no found"));
+            articleRUupdate.setCategory(categoryRU);
+            repository_ca.save(categoryRU);
+        }
+        articleRUupdate.setPosterUrls(poster_urlsRU.get());
+        articleRUupdate.setArticle_des_urls(listDes);
+
+        repository.save(articleRUupdate);
+        return covertToArticleDTORU(articleRUupdate);
     }
     @Cacheable(value = "article_ru_all", key = "'article_ru_all'+#id")
     public List<ArticleDTORU> getListArticle(Long id) {
