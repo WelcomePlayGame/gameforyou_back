@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
@@ -39,6 +40,17 @@ public class GamePostContollerEN {
     ) throws IOException {
 
         return ResponseEntity.ok().body(service.addGamePost(gamePost, posterPhoto, ids, photo, genresSet, platformsSet));
+    }
+    @PutMapping(value = "/update")
+    public ResponseEntity<GamePostEN> updateGame(
+            @RequestPart(name = "article") GamePostEN gamePost,
+            @RequestPart(name = "posterPhoto") List<MultipartFile> posterPhoto,
+            @RequestPart(name = "ids") List<Long> ids,
+            @RequestPart(name = "posterPhotoVertical") MultipartFile photo,
+            @RequestPart(name = "genresSet") List<String> genresSet,
+            @RequestPart(name = "platformsSet") List<String> platformsSet
+    ) throws URISyntaxException, IOException {
+        return ResponseEntity.ok().body(service.updateGame(gamePost, posterPhoto, ids, photo, genresSet, platformsSet));
     }
 
     @GetMapping(value = "/{id}")

@@ -119,8 +119,6 @@ public class ArticleServiceEN implements ForkWithFile {
     @Transactional
     public ArticleDTOEN updateArticle(ArticleEN articleEN, List<MultipartFile> posterPhoto, List<Long> ids, List<String> tagSet) throws IOException, URISyntaxException {
         ArticleEN articleENupdate = repository.findById(articleEN.getId()).orElseThrow(() -> new EntityNotFoundException("no id for article"));
-        log.info(articleENupdate.getPosterUrls().getPosterUrl1024x768());
-        System.out.println(articleENupdate.getPosterUrls().getPosterUrl1024x768());
         URI cutPath = new URI(articleENupdate.getPosterUrls().getPosterUrl1024x768());
         String path = cutPath.getPath();
 

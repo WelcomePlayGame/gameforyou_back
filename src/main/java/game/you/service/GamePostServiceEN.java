@@ -3,10 +3,7 @@ package game.you.service;
 import game.you.dto.GamePostByIdDTOEN;
 import game.you.dto.GamePostDTOEN;
 import game.you.entity.*;
-import game.you.repository.GamePostDesUrlRepositoryEN;
-import game.you.repository.GamePostRepositoryEN;
-import game.you.repository.GenresRepositotyEN;
-import game.you.repository.PlatformsRepositoryEN;
+import game.you.repository.*;
 import game.you.unit.ForkWithFile;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +36,8 @@ public class GamePostServiceEN implements ForkWithFile {
     final  private ModelMapper modelMapper;
     final  private PlatformsRepositoryEN platformsRepository;
     final private GenresRepositotyEN genresRepositoty;
-
+    final private GamePosterHorizontalRepositoryEN repository_poster_horintal;
+    final private GamePosterVerticalRepositoryEN repository_poster_vertical;
     @Value("${server.url.gamepost_poster}")
     private String URL_CATALOG;
     @Value("${file.upload.gamepost_poster}")
@@ -100,6 +101,112 @@ public class GamePostServiceEN implements ForkWithFile {
         gamePost.setPosterHorizontal_uls(posterHorizontal);
         gamePost.setPosterVertical_urs(photoVertical);
         return repository.save(gamePost);
+    }
+    @Transactional
+    public GamePostEN updateGame
+            (
+                    GamePostEN gamePost,
+                    List<MultipartFile> posterPhoto,
+                    List<Long> ids,
+                    MultipartFile photo,
+                    List <String> genresSet,
+                    List<String> platformsSet
+    ) throws URISyntaxException, IOException {
+        GamePostEN gamePostUpdate = repository.findById(gamePost.getId()).orElseThrow(()-> new EntityNotFoundException("Not game id"));
+        URI cutHorPath = new URI(gamePostUpdate.getPosterHorizontal_uls().getPoster_1024x768());
+        URI cutVerPath = new URI(gamePostUpdate.getPosterVertical_urs().getPoster_300x300());
+
+        String pathHorString = cutHorPath.getPath();
+        String pathVerString = cutVerPath.getPath();
+
+        Path pathHor = Path.of(pathHorString).getParent();
+        ForkWithFile.deleteDirectoryAndItsContent(pathHor);
+
+        if (gamePost.getTitle()!=null) {
+            gamePostUpdate.setTitle(gamePost.getTitle());
+        }
+        if (gamePost.getSeo_title()!=null) {
+            gamePostUpdate.setSeo_title(gamePostUpdate.getSeo_title());
+        }
+        if (gamePost.getDes()!=null) {
+            gamePostUpdate.setDes(gamePost.getDes());
+        }
+        if (gamePost.getSeo_des()!=null) {
+            gamePostUpdate.setSeo_des(gamePost.getSeo_des());
+        }
+        if (gamePost.getOs() != null) {
+            gamePostUpdate.setOs(gamePost.getOs());
+        }
+        if (gamePost.getMinProcessor() != null) {
+            gamePostUpdate.setMinProcessor(gamePost.getMinProcessor());
+        }
+        if (gamePost.getMaxProcessor()!=null) {
+            gamePostUpdate.setMaxProcessor(gamePost.getMaxProcessor());
+        }
+        if (gamePost.getMinRam() != null) {
+            gamePostUpdate.setMinRam(gamePost.getMinRam());
+        }
+        if (gamePost.getMaxRam() != null) {
+            gamePostUpdate.setMaxRam(gamePost.getMaxRam());
+        }
+        if (gamePost.getDirectX()!=null) {
+            gamePostUpdate.setDirectX(gamePost.getDirectX());
+        }
+        if(gamePost.getLan() !=null) {
+            gamePostUpdate.setOs(gamePost.getLan());
+        }
+        if (gamePost.getMemory()!=null) {
+            gamePostUpdate.setMemory(gamePost.getMemory());
+        }
+        if (gamePost.getSeries_games()!=null) {
+            gamePostUpdate.setSeries_games(gamePost.getSeries_games());
+        }
+
+        Optional<GamePosterHorizontalEN> gamePosterHorizontalEN = Optional.ofNullable(repository_poster_horintal.findById(gamePost.getId()).orElseThrow(() -> new EntityNotFoundException("No id Photo Horizontal")));
+        Optional<GamePosterVerticalEN> gamePosterVerticalEN = Optional.ofNullable(repository_poster_vertical.findById(gamePost.getId()).orElseThrow(() -> new EntityNotFoundException("No id Vertical Photo")));
+
+        String latinTitle = StringUtils.stripAccents(gamePostUpdate.getTitle())
+                .replaceAll("\\s", "_")
+                .replaceAll("[^\\p{L}\\p{N}]", "")
+                .toLowerCase();
+        if (!posterPhoto.isEmpty()) {
+            for (MultipartFile file : posterPhoto) {
+                String name = generateNameFile(file);
+                createDirectory(UPLOAD_CATALOG+"/en/"+latinTitle, name, file);
+            if (file.getOriginalFilename().contains("1024x768")) {
+                gamePosterHorizontalEN.get().setPoster_1024x768(BASE_URL+URL_CATALOG+"/en/"+latinTitle+"/"+name);
+            } else if (file.getOriginalFilename().contains("480x320")) {
+                gamePosterHorizontalEN.get().setPoster_480x320(BASE_URL+URL_CATALOG+"/en/"+latinTitle+"/"+name);
+            }
+            }
+        if (!photo.isEmpty()) {
+            String name = generateNameFile(photo);
+            createDirectory(UPLOAD_CATALOG+"/en/"+latinTitle, name, photo);
+            gamePosterVerticalEN.get().setPoster_300x300(BASE_URL+URL_CATALOG+"/en/"+latinTitle+"/"+name);
+        }
+        }
+        Set<GenresEN> genresUpdateSet = new HashSet<>();
+        for(String id : genresSet) {
+            Long idGenre = Long.parseLong(id);
+            GenresEN genre = genresRepositoty.findById(idGenre).orElseThrow(()-> new EntityNotFoundException("No Id Genre"));
+            genresUpdateSet.add(genre);
+        }
+        Set<PlatformsEN> platformUpdateSet = new HashSet<>();
+        for(String id : platformsSet){
+            Long idPlatform = Long.parseLong(id);
+            PlatformsEN platforms = platformsRepository.findById(idPlatform).orElseThrow(()-> new EntityNotFoundException("No id Platform"));
+            platformUpdateSet.add(platforms);
+        }
+        Set<GamePost_des_urlsEN> list = new HashSet<>();
+        for (Long id : ids) {
+            GamePost_des_urlsEN game_des = repository_des.findById(id).orElseThrow(()-> new EntityNotFoundException("No id photo_des"));
+            list.add(game_des);
+        }
+        gamePostUpdate.setPlatformsSet(platformUpdateSet);
+        gamePostUpdate.setGenresSet(genresUpdateSet);
+        gamePostUpdate.setGamePost_des_urls(list);
+        repository.save(gamePostUpdate);
+        return gamePostUpdate;
     }
     @Cacheable(value = "game_en_id", key = "'game_en_id:'+#id")
     public GamePostByIdDTOEN getGamePostDTOEN(String id) {
