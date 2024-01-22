@@ -121,8 +121,7 @@ public class ArticleServiceEN implements ForkWithFile {
         ArticleEN articleENupdate = repository.findById(articleEN.getId()).orElseThrow(() -> new EntityNotFoundException("no id for article"));
         URI cutPath = new URI(articleENupdate.getPosterUrls().getPosterUrl1024x768());
         String path = cutPath.getPath();
-
-
+        log.info(articleEN.getCategory().toString());
         Path pathForDelete = Path.of(path).getParent();
         ForkWithFile.deleteDirectoryAndItsContent(pathForDelete);
 
@@ -178,7 +177,7 @@ public class ArticleServiceEN implements ForkWithFile {
         if (articleEN.getCategory() != null) {
             CategoryEN categoryEN = categoryRepository_en.findById(articleEN.getId()).orElseThrow(()-> new EntityNotFoundException("Category id no found"));
             articleENupdate.setCategory(categoryEN);
-            repository_ca.save(categoryEN);
+//            repository_ca.save(categoryEN);
         }
         articleENupdate.setPosterUrls(poster_urlsEN.get());
         articleENupdate.setArticle_des_urls(listDes);
