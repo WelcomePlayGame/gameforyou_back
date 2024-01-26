@@ -175,9 +175,8 @@ public class ArticleServiceEN implements ForkWithFile {
             articleENupdate.setSeo_des(articleEN.getSeo_des());
         }
         if (articleEN.getCategory() != null) {
-            CategoryEN categoryEN = categoryRepository_en.findById(articleEN.getId()).orElseThrow(()-> new EntityNotFoundException("Category id no found"));
+            CategoryEN categoryEN = categoryRepository_en.findById(articleEN.getCategory().getId()).orElseThrow(()-> new EntityNotFoundException("Category id no found"));
             articleENupdate.setCategory(categoryEN);
-//            repository_ca.save(categoryEN);
         }
         articleENupdate.setPosterUrls(poster_urlsEN.get());
         articleENupdate.setArticle_des_urls(listDes);

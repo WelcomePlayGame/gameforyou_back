@@ -49,7 +49,7 @@ public class ArticleEN implements Serializable {
     @JoinColumn(name = "statistics_id", referencedColumnName = "id")
     private StatisticsArticleEN statistics;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private CategoryEN category;
 
