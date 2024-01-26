@@ -63,7 +63,6 @@ public class ArticlePL {
             joinColumns = @JoinColumn(name = "article_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Set<TagPL> tagSet = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "article", fetch = FetchType.EAGER, cascade = CascadeType.ALL)

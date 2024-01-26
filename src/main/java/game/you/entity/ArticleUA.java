@@ -48,7 +48,7 @@ public class ArticleUA {
     private StatisticsArticleUA statistics;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = true)
+    @JoinColumn(name = "category_id")
     private CategoryUA category;
 
     @ManyToOne(fetch = FetchType.LAZY)
