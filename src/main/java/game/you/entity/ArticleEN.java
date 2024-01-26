@@ -53,7 +53,7 @@ public class ArticleEN implements Serializable {
     @JoinColumn(name = "category_id")
     private CategoryEN category;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gamepost_id")
     private GamePostEN gamePost;
 
@@ -66,6 +66,6 @@ public class ArticleEN implements Serializable {
 
     @OneToMany(mappedBy = "article", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Article_des_urlsEN> article_des_urls;
-    @OneToMany(mappedBy = "articleEN", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "articleEN", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<CommentEN> commentSet;
 }
