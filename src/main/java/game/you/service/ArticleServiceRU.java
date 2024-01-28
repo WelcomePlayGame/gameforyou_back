@@ -132,7 +132,7 @@ public class ArticleServiceRU implements ForkWithFile {
         if(articleRU.getTitle() != null) {
             articleRUupdate.setTitle(articleRU.getTitle());
         }
-        Optional<Article_poster_urlsRU> poster_urlsRU = Optional.ofNullable(repository_poster.findById(articleRUupdate.getId()).orElseThrow(() -> new EntityNotFoundException("no id poster")));
+        Optional<Article_poster_urlsRU> poster_urlsRU = Optional.ofNullable(repository_poster.findById(articleRUupdate.getPosterUrls().getId()).orElseThrow(() -> new EntityNotFoundException("no id poster")));
 
         String latinTitle = StringUtils.stripAccents(articleRUupdate.getTitle())
                 .replaceAll("\\s", "_")
@@ -183,7 +183,6 @@ public class ArticleServiceRU implements ForkWithFile {
             articleRUupdate.setCategory(categoryRU);
             repository_ca.save(categoryRU);
         }
-        articleRUupdate.setPosterUrls(poster_urlsRU.get());
         articleRUupdate.setArticle_des_urls(listDes);
 
         repository.save(articleRUupdate);

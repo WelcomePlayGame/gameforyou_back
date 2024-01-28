@@ -162,8 +162,8 @@ public class GamePostServiceEN implements ForkWithFile {
             gamePostUpdate.setSeries_games(gamePost.getSeries_games());
         }
 
-        Optional<GamePosterHorizontalEN> gamePosterHorizontalEN = Optional.ofNullable(repository_poster_horintal.findById(gamePost.getId()).orElseThrow(() -> new EntityNotFoundException("No id Photo Horizontal")));
-        Optional<GamePosterVerticalEN> gamePosterVerticalEN = Optional.ofNullable(repository_poster_vertical.findById(gamePost.getId()).orElseThrow(() -> new EntityNotFoundException("No id Vertical Photo")));
+        Optional<GamePosterHorizontalEN> gamePosterHorizontalEN = Optional.ofNullable(repository_poster_horintal.findById(gamePost.getPosterHorizontal_uls().getId()).orElseThrow(() -> new EntityNotFoundException("No id Photo Horizontal")));
+        Optional<GamePosterVerticalEN> gamePosterVerticalEN = Optional.ofNullable(repository_poster_vertical.findById(gamePost.getPosterVertical_urs().getId()).orElseThrow(() -> new EntityNotFoundException("No id Vertical Photo")));
 
         String latinTitle = StringUtils.stripAccents(gamePostUpdate.getTitle())
                 .replaceAll("\\s", "_")

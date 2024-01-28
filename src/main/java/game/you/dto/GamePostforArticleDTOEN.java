@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Setter
 @Getter
-public class GamePostforArticleDTOEN {
+public class GamePostforArticleDTOEN implements Serializable {
     private  long id;
     private String title;
     private String datatime;

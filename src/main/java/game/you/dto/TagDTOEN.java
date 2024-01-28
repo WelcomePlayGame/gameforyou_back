@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 @Setter
 @Getter
-public class TagDTOEN  {
+public class TagDTOEN implements Serializable  {
     private long id;
     private String title;
 }

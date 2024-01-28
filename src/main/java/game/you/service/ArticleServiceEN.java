@@ -178,8 +178,11 @@ public class ArticleServiceEN implements ForkWithFile {
             CategoryEN categoryEN = categoryRepository_en.findById(articleEN.getCategory().getId()).orElseThrow(()-> new EntityNotFoundException("Category id no found"));
             articleENupdate.setCategory(categoryEN);
         }
+        if (articleEN.getGamePost() != null) {
+            GamePostEN gamePostEN = repository_game.findById(articleEN.getGamePost().getId()).orElseThrow(()-> new EntityNotFoundException("Game not id"));
+            articleENupdate.setGamePost(gamePostEN);
+        }
         articleENupdate.setArticle_des_urls(listDes);
-
         repository.save(articleENupdate);
         return covertToArticleDTOEN(articleENupdate);
     }

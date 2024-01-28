@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 @Setter
 @Getter
-public class StatisticsArticleDTOEN  {
+public class StatisticsArticleDTOEN implements Serializable  {
     private Long id;
     private long action;
     private long more15;

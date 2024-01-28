@@ -15,7 +15,7 @@ import java.util.Set;
 
 @Setter
 @Getter
-public class ArticleDTOEN {
+public class ArticleDTOEN implements Serializable {
     private long id;
     private String title;
     private String des;

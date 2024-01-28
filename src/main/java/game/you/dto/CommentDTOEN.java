@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Setter
 @Getter
-public class CommentDTOEN  {
+public class CommentDTOEN implements Serializable {
     private Long id;
     private String title_comment;
     private String des_comment;
