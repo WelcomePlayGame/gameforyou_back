@@ -5,13 +5,14 @@ import game.you.entity.ArticleEN;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Setter
 @Getter
-public class GamePostByIdDTOEN {
+public class GamePostByIdDTOEN implements Serializable {
     private Long id;
     private String title;
     private String seo_title;
