@@ -8,7 +8,6 @@ import java.io.Serializable;
 
 @Setter
 @Getter
-@ToString
 public class StatisticsArticleDTORU implements Serializable {
     private Long id;
     private long action;

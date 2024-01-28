@@ -21,6 +21,7 @@ import java.util.Arrays;
 
 @Configuration
 @EnableWebMvc
+@EnableCaching
 public class Conf implements WebMvcConfigurer {
 
     @Override
