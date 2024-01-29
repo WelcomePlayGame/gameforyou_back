@@ -2,11 +2,13 @@ package game.you.controller;
 
 import game.you.dto.GamePostByIdDTOEN;
 import game.you.dto.GamePostDTOEN;
+import game.you.dto.GamePostDTORU;
 import game.you.entity.GamePostEN;
 import game.you.service.GamePostServiceEN;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping(value = "/gamepost/en/")
@@ -27,7 +30,9 @@ public class GamePostContollerEN {
             @RequestParam(value = "id", required = false) Long id,
             @RequestParam(value = "series_games", required = false) String series_games
     ) {
-        return  ResponseEntity.ok().body(service.getAllFGame(id, series_games));
+        List<GamePostDTOEN> list = service.getAllFGame(id, series_games);
+        CacheControl cacheControl = CacheControl.maxAge(30, TimeUnit.MINUTES).cachePublic();
+        return  ResponseEntity.ok().cacheControl(cacheControl).body(list);
     }
     @PostMapping(value = "/add")
     public ResponseEntity<GamePostEN> addPostGame (@RequestPart(name = "article") GamePostEN gamePost,

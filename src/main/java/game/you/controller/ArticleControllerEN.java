@@ -9,6 +9,7 @@ import game.you.service.ArticleServiceEN;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping(value = "/article/en/")
@@ -26,7 +28,9 @@ public class ArticleControllerEN {
     ResponseEntity<List<ArticleDTOEN>> getListArticleEN (
             @RequestParam(required = false) Long id
     ) {
-        return ResponseEntity.ok().body(service.getListArticle(id));
+        List<ArticleDTOEN> list = service.getListArticle(id);
+        CacheControl cacheControl = CacheControl.maxAge(30, TimeUnit.MINUTES).cachePublic();
+        return ResponseEntity.ok().cacheControl(cacheControl).body(list);
     }
 
     @GetMapping(value = "/{id}")
