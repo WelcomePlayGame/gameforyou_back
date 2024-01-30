@@ -179,9 +179,12 @@ public class ArticleServiceRU implements ForkWithFile {
             articleRUupdate.setSeo_des(articleRU.getSeo_des());
         }
         if (articleRU.getCategory() != null) {
-            CategoryRU categoryRU = repository_ca.findById(articleRU.getId()).orElseThrow(()-> new EntityNotFoundException("Category id no found"));
+            CategoryRU categoryRU = repository_ca.findById(articleRU.getCategory().getId()).orElseThrow(()-> new EntityNotFoundException("Category id no found"));
             articleRUupdate.setCategory(categoryRU);
-            repository_ca.save(categoryRU);
+        }
+        if (articleRU.getGamePost() != null) {
+            GamePostRU gamePostRU = repository_game.findById(articleRU.getGamePost().getId()).orElseThrow(()-> new EntityNotFoundException("No id game"));
+            articleRUupdate.setGamePost(gamePostRU);
         }
         articleRUupdate.setArticle_des_urls(listDes);
 

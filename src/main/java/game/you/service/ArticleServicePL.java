@@ -177,9 +177,12 @@ public class ArticleServicePL implements ForkWithFile {
             articlePLupdate.setSeo_des(articlePL.getSeo_des());
         }
         if (articlePL.getCategory() != null) {
-            CategoryPL categoryPL = repository_ca.findById(articlePL.getId()).orElseThrow(()-> new EntityNotFoundException("Category id no found"));
+            CategoryPL categoryPL = repository_ca.findById(articlePL.getCategory().getId()).orElseThrow(()-> new EntityNotFoundException("Category id no found"));
             articlePLupdate.setCategory(categoryPL);
-            repository_ca.save(categoryPL);
+        }
+        if (articlePL.getGamePost()!=null) {
+            GamePostPL gamePostPL = repository_game.findById(articlePL.getGamePost().getId()).orElseThrow(()-> new EntityNotFoundException("Game no id") );
+            articlePLupdate.setGamePost(gamePostPL);
         }
         articlePLupdate.setArticle_des_urls(listDes);
         repository.save(articlePLupdate);

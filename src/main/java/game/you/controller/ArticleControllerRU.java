@@ -2,7 +2,6 @@ package game.you.controller;
 
 
 import game.you.dto.ArticleDTORU;
-import game.you.dto.ArticleDTOUA;
 import game.you.entity.ArticleRU;
 import game.you.service.ArticleServiceRU;
 import jakarta.persistence.EntityNotFoundException;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
@@ -48,6 +48,15 @@ public class ArticleControllerRU {
         }
         return ResponseEntity.ok().body(service.addArticle(articleRU,posterPhoto , ids, tagSet));
 
+    }
+    @PutMapping(value = "/update")
+    public ResponseEntity<ArticleDTORU> update(
+            @RequestPart (name= "article") ArticleRU articleRU,
+            @RequestPart (name= "posterPhoto") List<MultipartFile> posterPhoto,
+            @RequestPart(name= "ids") List<Long> ids,
+            @RequestPart(name= "tagSet") List<String> tagSet
+    ) throws IOException, URISyntaxException {
+        return ResponseEntity.ok().body(service.updateArticle(articleRU, posterPhoto, ids, tagSet));
     }
     @DeleteMapping(value = "/delete/{id}")
     public ResponseEntity<ArticleDTORU> deleteArticle(@PathVariable("id") long id) {

@@ -186,9 +186,12 @@ public class ArticleServiceUA implements ForkWithFile {
             articleUAupdate.setSeo_des(articleUA.getSeo_des());
         }
         if (articleUA.getCategory() != null) {
-            CategoryUA categoryUA = repository_ca.findById(articleUA.getId()).orElseThrow(()-> new EntityNotFoundException("Category id no found"));
+            CategoryUA categoryUA = repository_ca.findById(articleUA.getCategory().getId()).orElseThrow(()-> new EntityNotFoundException("Category id no found"));
             articleUAupdate.setCategory(categoryUA);
-            repository_ca.save(categoryUA);
+        }
+        if (articleUA.getGamePost()!=null) {
+            GamePostUA gamePostUA = repository_game.findById(articleUA.getGamePost().getId()).orElseThrow(()-> new EntityNotFoundException("Not id game"));
+            articleUAupdate.setGamePost(gamePostUA);
         }
         articleUAupdate.setArticle_des_urls(listDes);
 
