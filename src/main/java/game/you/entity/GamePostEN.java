@@ -53,6 +53,8 @@ public class GamePostEN implements Serializable  {
     private String url_post;
     @Column(name = "series_games")
     private String series_games;
+    @Column(name = "revies_admin")
+    private String revies_admin;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "poster_horizontal", referencedColumnName = "id")
     private GamePosterHorizontalEN posterHorizontal_uls;
@@ -87,4 +89,5 @@ public class GamePostEN implements Serializable  {
 
     @OneToMany(mappedBy = "gamePost", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<GamePost_des_urlsEN> gamePost_des_urls;
+
 }

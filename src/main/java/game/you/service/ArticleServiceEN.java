@@ -121,7 +121,7 @@ public class ArticleServiceEN implements ForkWithFile {
         ArticleEN articleENupdate = repository.findById(articleEN.getId()).orElseThrow(() -> new EntityNotFoundException("no id for article"));
         URI cutPath = new URI(articleENupdate.getPosterUrls().getPosterUrl1024x768());
         String path = cutPath.getPath();
-        log.info(articleEN.getCategory().toString());
+
         Path pathForDelete = Path.of(path).getParent();
         ForkWithFile.deleteDirectoryAndItsContent(pathForDelete);
 
@@ -134,6 +134,7 @@ public class ArticleServiceEN implements ForkWithFile {
                 .replaceAll("\\s", "_")
                 .replaceAll("[^\\p{L}\\p{N}]", "")
                 .toLowerCase();
+
         if (!posterPhoto.isEmpty()) {
             for (MultipartFile file : posterPhoto) {
                 String name = generateNameFile(file);

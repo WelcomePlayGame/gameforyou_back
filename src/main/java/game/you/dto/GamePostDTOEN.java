@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.time.Instant;
 import java.util.Set;
 
 @Setter
@@ -34,4 +33,5 @@ public class GamePostDTOEN implements Serializable {
     private Set<GenresDTOEN> genresSet;
     private String url_post;
     private String series_games;
+    private String revies_admin;
 }

@@ -39,4 +39,5 @@ public class GamePostByIdDTOEN implements Serializable {
     private Set<ListArticleForGame> articleSet;
     private Set<CommentDTOEN> commentSet;
     private String series_games;
+    private String revies_admin;
 }

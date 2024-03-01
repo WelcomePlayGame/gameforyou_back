@@ -161,14 +161,20 @@ public class GamePostServiceEN implements ForkWithFile {
         if (gamePost.getSeries_games()!=null) {
             gamePostUpdate.setSeries_games(gamePost.getSeries_games());
         }
+        if (gamePost.getRevies_admin()!=null) {
+        gamePostUpdate.setRevies_admin(gamePost.getRevies_admin());
+        }
+        if (gamePost.getDatatime()!=null) {
+            gamePostUpdate.setDatatime((gamePost.getDatatime()));
+        }
 
-        Optional<GamePosterHorizontalEN> gamePosterHorizontalEN = Optional.ofNullable(repository_poster_horintal.findById(gamePost.getPosterHorizontal_uls().getId()).orElseThrow(() -> new EntityNotFoundException("No id Photo Horizontal")));
-        Optional<GamePosterVerticalEN> gamePosterVerticalEN = Optional.ofNullable(repository_poster_vertical.findById(gamePost.getPosterVertical_urs().getId()).orElseThrow(() -> new EntityNotFoundException("No id Vertical Photo")));
-
+        Optional<GamePosterHorizontalEN> gamePosterHorizontalEN = Optional.ofNullable(repository_poster_horintal.findById(gamePostUpdate.getPosterHorizontal_uls().getId()).orElseThrow(() -> new EntityNotFoundException("No id Photo Horizontal")));
+        Optional<GamePosterVerticalEN> gamePosterVerticalEN = Optional.ofNullable(repository_poster_vertical.findById(gamePostUpdate.getPosterVertical_urs().getId()).orElseThrow(() -> new EntityNotFoundException("No id Vertical Photo")));
         String latinTitle = StringUtils.stripAccents(gamePostUpdate.getTitle())
                 .replaceAll("\\s", "_")
                 .replaceAll("[^\\p{L}\\p{N}]", "")
                 .toLowerCase();
+
         if (!posterPhoto.isEmpty()) {
             for (MultipartFile file : posterPhoto) {
                 String name = generateNameFile(file);
